@@ -21,4 +21,6 @@ jobs:
       - run: node --check multiplayer-client.js
       - run: node --check solo-challenge.js
       - run: node --check functions/index.js
+      - run: node --check functions/tournaments.js
+      - run: node --check game/tournament-schedule.js
       - run: node -e "JSON.parse(require('fs').readFileSync('database.secure.rules.json','utf8'))"
