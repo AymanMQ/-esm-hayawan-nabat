@@ -1,34 +1,45 @@
-/* دفتر الذكريات — theme shared by solo and multiplayer pages */
-:root{--notebook-ink:#314661;--notebook-red:#bd706c;--notebook-paper:#f8f0d9;--notebook-rule:rgba(89,138,155,.24)}
-body{background:#b8ae98;color:var(--notebook-ink)}
-.page{position:relative;isolation:isolate;min-height:100dvh;max-width:650px;padding:18px 24px 54px!important;background:
-linear-gradient(to left,transparent 0 41px,rgba(183,75,72,.5) 41px 43px,transparent 43px),
-repeating-linear-gradient(to bottom,transparent 0 33px,var(--notebook-rule) 34px 35px,transparent 36px),
-radial-gradient(ellipse at 10% 0%,#fff9e8 0%,transparent 68%),var(--notebook-paper)!important;
-border:1px solid #b1a18a!important;border-radius:3px!important;box-shadow:0 7px 25px rgba(45,33,20,.22);overflow:hidden}
-.page::before{content:"";position:absolute;inset:6px;z-index:-1;border:1px solid rgba(104,77,62,.26);pointer-events:none}
-.page::after{content:"❀     ✿     ❀";position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#bb807c;font-size:15px;letter-spacing:15px;pointer-events:none}
-.notebook-heading{position:relative;border:2px double #8c8072;background:rgba(255,252,239,.7);padding:10px 13px 15px;margin:7px 0 20px;box-shadow:inset 0 0 0 4px rgba(142,112,91,.08)}
-.notebook-heading::before,.notebook-heading::after{content:"❧";position:absolute;top:7px;color:#ac7770;font-size:18px}.notebook-heading::before{right:9px}.notebook-heading::after{left:9px;transform:scaleX(-1)}
-.notebook-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:#675d54;border-bottom:1px dashed #bca88b;padding:7px 15px}
-.notebook-heading h1{font-size:clamp(30px,8vw,46px)!important;line-height:1.35!important;margin:10px 0 2px!important;color:#3b536c;text-shadow:1px 2px #e9d9bc!important}
-.notebook-subject{text-align:center;font-size:13px;color:#8d554d;font-weight:bold}
-.page .card{background:rgba(255,251,237,.89)!important;border:1px solid #ab9a7e!important;border-radius:4px!important;box-shadow:3px 4px rgba(106,93,70,.14)!important}
-.page .btn{background:#e9d19c;border:1px solid #8b7359!important;border-radius:6px!important;box-shadow:2px 3px rgba(115,98,75,.2)!important;color:#35495f}
-.page .btn.alt,.page .btn.secondary{background:#e2e9dc}
-.page input,.page select{background:#fffbef;border:1px solid #b7a78c;border-bottom:2px solid #718da2;border-radius:3px!important}
-.page h2{color:#6f4948}.page .letter{color:#a9584d!important;text-shadow:2px 2px #e9d6bf}
-.page .pill{background:#eee0b8;border-radius:3px}.page .muted{color:#675e56}
-.page section:not(.hidden):not(.hide){animation:pageIn .24s ease-out both}
-@keyframes pageIn{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.page section{animation:none!important}*{scroll-behavior:auto!important}}
-@media(max-width:430px){.page{padding:12px 15px 45px!important}.notebook-meta{font-size:11px}.page .btn{min-height:46px}}
-
-/* Writing lines, not table cells */
-#fields{margin:12px 0 22px}
-#fields label{display:block;margin:15px 0 2px!important;color:#725a4d;font-size:15px}
-#fields input{display:block;width:100%;height:42px;padding:6px 4px!important;margin:0 0 6px!important;background:transparent!important;border:0!important;border-bottom:1px solid #7899aa!important;border-radius:0!important;box-shadow:none!important;font-size:21px;outline:none}
-#fields input:focus{border-bottom:2px solid #b76c65!important;background:rgba(255,255,255,.15)!important}
+/* إصدار دفتر المدرسة القديم — حبر، ورق مصفر، هوامش وملاحظات بخط اليد */
+:root{--paper:#ede1bd;--ink:#3c3c36;--red:#a65d58;--line:rgba(70,119,147,.37)}
+html{background:#7f796d}
+body{margin:0!important;background:radial-gradient(circle at 45% 20%,#afa38c,#777264)!important;color:var(--ink)!important;font-family:Tahoma,"Noto Naskh Arabic",serif!important}
+.page{position:relative;isolation:isolate;max-width:620px!important;min-height:100dvh!important;margin:0 auto!important;padding:17px 30px 62px!important;border:0!important;border-radius:1px!important;overflow:hidden!important;box-shadow:0 4px 0 #a69b80,0 14px 32px rgba(29,23,15,.37)!important;
+background:
+linear-gradient(90deg,transparent 0,rgba(81,60,39,.045) 5%,transparent 12%,transparent 88%,rgba(88,60,37,.085) 100%),
+radial-gradient(ellipse at 7% 2%,rgba(255,252,227,.58),transparent 47%),
+radial-gradient(ellipse at 92% 96%,rgba(141,96,51,.14),transparent 46%),
+repeating-linear-gradient(to bottom,transparent 0px,transparent 33px,var(--line) 34px,transparent 35px),
+#eee2c3!important}
+.page::before{content:"";position:absolute;inset:0 auto 0 47px;width:2px;background:rgba(170,69,65,.58);border:0!important;z-index:-1;pointer-events:none}
+.page::after{content:"✿  ❧  ✿";position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#9c6862;font-size:17px;letter-spacing:8px;opacity:.7;pointer-events:none}
+.notebook-heading{border:0!important;border-bottom:2px solid rgba(80,78,67,.48)!important;box-shadow:none!important;background:transparent!important;padding:4px 0 13px!important;margin:0 0 10px!important}
+.notebook-heading::before{content:"✥"!important;right:2px!important;top:0!important;color:#8c5d54!important}
+.notebook-heading::after{content:"✥"!important;left:2px!important;top:0!important;color:#8c5d54!important}
+.notebook-meta{display:flex!important;justify-content:space-between;gap:8px;font-size:14px!important;font-weight:700;border-bottom:1px solid #998e7c!important;padding:5px 28px 9px!important;color:#524c43!important}
+.notebook-subject{font-size:14px!important;font-weight:bold;color:#965950!important;letter-spacing:1px;margin-top:9px}
+.page h1{font-family:Georgia,Tahoma,serif!important;font-weight:800!important;font-size:clamp(33px,9vw,52px)!important;line-height:1.4!important;color:#3b4140!important;text-shadow:1px 1px rgba(80,70,48,.2)!important;letter-spacing:-1px;margin:12px 0 6px!important}
+.page h2{color:#78514c!important;font-size:23px!important}
+.page .line,.page .underline{width:145px!important;height:2px!important;background:#a56a5f!important;margin-bottom:20px!important;transform:rotate(-1deg)}
+.page header{border-bottom:1px dashed #a79c88;padding-bottom:7px;color:#746451}
+.page .tag{background:transparent!important;transform:rotate(-3deg);color:#965b4e;border:1px dashed #ae8574;padding:5px!important;font-weight:bold}
+.page .card{background:rgba(241,230,197,.22)!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:13px 0 21px!important;padding:13px 5px 16px!important}
+.page .card + .card{border-top:1px dashed #ab9c83!important;padding-top:20px!important}
+.page .btn{background:#dfcda4!important;border:1px solid #837665!important;border-radius:2px!important;box-shadow:2px 2px rgba(75,66,48,.2)!important;color:#51453b!important;font-family:Tahoma,serif!important;font-size:18px!important}
+.page .btn.alt,.page .btn.secondary{background:#d6d8c3!important}
+.page input,.page select{background:rgba(245,236,207,.35)!important;color:#2d424d!important;border:0!important;border-bottom:1px solid #718d9c!important;border-radius:0!important;box-shadow:none!important}
+.page input::placeholder{color:#918777}
+.page .letter{font-family:Georgia,Tahoma,serif!important;color:#a34f49!important;font-size:100px!important;text-shadow:1px 2px #d2bba0!important}
+.page .pill{background:transparent!important;border:1px dashed #a38b72!important;border-radius:2px!important;color:#665342}
+.page .muted,.page p{color:#605b51}
+.page .answer,.page .person{background:transparent!important;border:0!important;border-bottom:1px solid #9fb2b7!important;border-radius:0!important;box-shadow:none!important}
+.page .score{color:#476451!important}
+#fields{margin:8px 0 22px!important}
+#fields label{display:block!important;margin:15px 0 1px!important;font-size:16px!important;color:#70574b!important}
+#fields input{display:block!important;height:42px!important;padding:5px 2px!important;margin:0 0 5px!important;background:transparent!important;border:0!important;border-bottom:1px solid #7d9ba9!important;border-radius:0!important;font-size:20px!important}
+#fields input:focus{outline:none!important;border-bottom:2px solid #a96560!important}
 #answers{display:block!important}
-#answers .answer{background:transparent!important;border:0!important;border-bottom:1px solid #93a9aa!important;border-radius:0!important;margin:6px 0;padding:10px 3px!important;box-shadow:none!important}
-#answers .answer strong{display:inline-block!important;min-width:68px;margin-left:12px;color:#7b534e}
+#answers .answer{padding:9px 2px!important;margin:5px 0!important;overflow-wrap:anywhere}
+#answers .answer strong{display:inline-block!important;min-width:68px!important;margin-left:10px}
+.page section:not(.hidden):not(.hide){animation:turnPaper .22s ease-out both}
+@keyframes turnPaper{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:450px){.page{padding:12px 19px 54px!important}.page::before{left:25px!important}.notebook-meta{font-size:12px!important;padding-inline:20px!important}.page h1{font-size:35px!important}.page .card{padding-inline:2px!important}}
+@media(prefers-reduced-motion:reduce){.page section{animation:none!important}}
