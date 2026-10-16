@@ -41,3 +41,32 @@ repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transpar
 @keyframes pageIn{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:450px){.page{padding:16px 19px 54px!important}.page::before{inset:6px!important}.notebook-meta{font-size:11px!important;padding:7px 19px!important}.page h1{font-size:34px!important}}
 @media(prefers-reduced-motion:reduce){.page section{animation:none!important}}
+
+
+/* Arabic handwriting ink system — maintain legibility and notebook lines. */
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa+Ink:wght@400;700&display=swap');
+:root{--player-ink:#20538b;--review-ink:#a13f3b;--opponent-ink:#326c51}
+#fields input{
+  font-family:"Aref Ruqaa Ink",Tahoma,serif!important;
+  font-size:27px!important;
+  font-weight:400!important;
+  line-height:1.8!important;
+  height:59px!important;
+  padding:5px 4px 8px!important;
+  color:var(--player-ink)!important;
+  caret-color:var(--player-ink)!important;
+  -webkit-text-fill-color:var(--player-ink);
+  letter-spacing:0!important;
+}
+#fields input::placeholder{
+  font-family:Tahoma,Arial,sans-serif!important;
+  font-size:15px!important;
+  color:#877f74!important;
+  -webkit-text-fill-color:#877f74;
+}
+#fields input:disabled{opacity:.8;-webkit-text-fill-color:var(--player-ink)}
+#answers .answer .player-ink{color:var(--player-ink);font-family:"Aref Ruqaa Ink",Tahoma,serif;font-size:23px}
+#answers .answer .opponent-ink{color:var(--opponent-ink);font-family:"Aref Ruqaa Ink",Tahoma,serif;font-size:23px}
+#answers .answer .review-ink{color:var(--review-ink);font-size:14px;font-weight:bold;display:block;padding-top:3px}
+#answers .answer .answer-separator{color:#76695b;display:inline-block;margin:0 8px}
+@media(max-width:430px){#fields input{font-size:25px!important;height:56px!important}#answers .answer .player-ink,#answers .answer .opponent-ink{font-size:20px}}
