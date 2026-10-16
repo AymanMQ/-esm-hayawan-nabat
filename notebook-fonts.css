@@ -1,0 +1,38 @@
+/* الخطوط والهوية الكتابية — Arabic notebook typography, v1 */
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa+Ink:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+:root{--font-ink:'Aref Ruqaa Ink','Noto Naskh Arabic',serif;--font-read:'Noto Naskh Arabic',Tahoma,serif}
+html[dir="rtl"] body{font-family:var(--font-read)!important;line-height:1.65}
+html[dir="rtl"] .notebook-heading,
+html[dir="rtl"] .notebook-heading .notebook-meta,
+html[dir="rtl"] .notebook-heading .notebook-subject,
+html[dir="rtl"] .page h1,
+html[dir="rtl"] .page h2,
+html[dir="rtl"] .page h3{font-family:var(--font-ink)!important}
+html[dir="rtl"] .page h1{font-weight:700!important;letter-spacing:0!important;line-height:1.65!important}
+html[dir="rtl"] .page h2{font-weight:700!important;line-height:1.7!important}
+html[dir="rtl"] .notebook-meta{font-size:16px!important;line-height:1.7!important;letter-spacing:0!important}
+html[dir="rtl"] .notebook-subject{font-size:19px!important;line-height:1.8!important}
+html[dir="rtl"] .page #fields label,
+html[dir="rtl"] .page #fields input,
+html[dir="rtl"] .page .letter,
+html[dir="rtl"] .page .answer,
+html[dir="rtl"] .page .answer strong{font-family:var(--font-ink)!important}
+html[dir="rtl"] .page #fields input{font-size:23px!important;line-height:1.45!important;min-height:48px!important}
+html[dir="rtl"] .page #fields input::placeholder{font-family:var(--font-read)!important;font-size:15px;opacity:.65}
+html[dir="rtl"] .page #fields label{font-size:19px!important;font-weight:700!important}
+html[dir="rtl"] .page .letter{font-weight:700!important;line-height:1.4!important}
+html[dir="rtl"] .page .answer{font-size:18px!important;line-height:2!important}
+html[dir="rtl"] .page .btn,
+html[dir="rtl"] .page button,
+html[dir="rtl"] .page select,
+html[dir="rtl"] .page .muted,
+html[dir="rtl"] .page p,
+html[dir="rtl"] .page .pill{font-family:var(--font-read)!important}
+html[dir="rtl"] .page .btn,
+html[dir="rtl"] .page button{font-weight:700!important;line-height:1.6!important}
+html[dir="rtl"] .page select{font-size:17px!important}
+@media(max-width:450px){
+ html[dir="rtl"] .notebook-meta{font-size:13px!important}
+ html[dir="rtl"] .page h1{font-size:38px!important}
+ html[dir="rtl"] .page #fields input{font-size:22px!important}
+}
