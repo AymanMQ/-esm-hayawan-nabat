@@ -5,6 +5,7 @@ const {getDatabase}=require('firebase-admin/database');
 const {initializeApp,getApps}=require('firebase-admin/app');
 const {upcoming,eventId}=require('./lib/tournament-schedule');
 const {planTournament}=require('./lib/tournament-bracket');
+const {bracketView}=require('./lib/tournament-views');
 const {randomInt}=require('node:crypto');
 function shufflePlayers(ids){const out=ids.slice();for(let i=out.length-1;i>0;i--){const j=randomInt(i+1);[out[i],out[j]]=[out[j],out[i]]}return out}
 if(!getApps().length)initializeApp();
@@ -35,7 +36,7 @@ exports.registerTournament=onCall(options,async request=>{
 exports.tournamentStatus=onCall(options,async request=>{
  const uid=requireUser(request),now=Date.now(),args=eventArgs(request.data,now);
  const ev=(await db.ref('tournaments/'+args.id).get()).val();
- return {eventId:args.id,startsAt:args.startsAt,groupSize:args.groupSize,status:ev?.status||'not_opened',registered:Object.keys(ev?.players||{}).length,isRegistered:!!ev?.players?.[uid],bracket:ev?.bracket||null};
+ return {eventId:args.id,startsAt:args.startsAt,groupSize:args.groupSize,...bracketView(ev,uid)};
 });
 /* Lazy finalization invoked by an authenticated player. Not a scheduler; future Cloud Scheduler needed. */
 exports.lockTournamentRegistration=onCall(options,async request=>{
