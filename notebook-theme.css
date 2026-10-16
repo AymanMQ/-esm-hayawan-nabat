@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa+Ink:wght@400;700&display=swap');
 /* دفتر المدرسة القديم — ornamental title frame and ruled pages */
 :root{--paper:#e9dec1;--ink:#263e66;--red:#a44d49;--line:rgba(63,113,143,.34)}
 html{background:#8c816e}
@@ -44,7 +45,7 @@ repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transpar
 
 
 /* Arabic handwriting ink system — maintain legibility and notebook lines. */
-@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa+Ink:wght@400;700&display=swap');
+
 :root{--player-ink:#20538b;--review-ink:#a13f3b;--opponent-ink:#326c51}
 #fields input{
   font-family:"Aref Ruqaa Ink",Tahoma,serif!important;
