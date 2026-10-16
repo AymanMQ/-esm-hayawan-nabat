@@ -43,7 +43,16 @@ exports.openReview=onCall(options,async request=>{
  const submissions=(await db.ref('submissions/'+room+'/'+round).get()).val()||{};
  const answers={};for(const id of Object.keys(s.players)){answers[id]=submissions[id]?.answers||Object.fromEntries(activeCats(s).map(c=>[c,'']))}
  const openedAt=Date.now(),ref=db.ref(reviewPath(room,round));
- const tx=await ref.transaction(v=>v===null?{answers,openedAt,closesAt:openedAt+45000,status:'review',challenges:{}}:undefined);
+ const challenges={};
+ for(const [author,row] of Object.entries(answers)){
+   for(const cat of activeCats(s)){
+     if(row[cat] && classify(row[cat],cat,s.letter).status==='review'){
+       challenges[author]??={};
+       challenges[author][cat]={openedBy:'system',openedAt};
+     }
+   }
+ }
+ const tx=await ref.transaction(v=>v===null?{answers,openedAt,closesAt:openedAt+45000,status:'review',challenges}:undefined);
  if(!tx.committed)throw new HttpsError('already-exists','المراجعة مفتوحة بالفعل');
  await db.ref('rooms/'+room+'/phase').transaction(v=>v==='playing'?'review':undefined);
  return {ok:true,closesAt:openedAt+45000};
@@ -86,7 +95,9 @@ exports.finalizeReview=onCall(options,async request=>{
      if(!activeCats(s).includes(category)||!ids.includes(author))continue;
      const cast=ballots[author]?.[category]||{},votes={};
      for(const [voter,ballot] of Object.entries(cast))if(ids.includes(voter)&&voter!==author&&typeof ballot?.accept==='boolean'&&ballot.castAt<=closed.closesAt)votes[voter]=ballot.accept;
-     (decisions[author]??={})[category]=voteDecision(votes,author,ids).accepted;
+     const validation=classify(closed.answers?.[author]?.[category],category,s.letter);
+     const count=Object.keys(votes).length;
+     (decisions[author]??={})[category]=count===0?validation.status==='accepted':voteDecision(votes,author,ids).accepted;
    }
  }
  const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter,activeCats(s),(word,category,letter)=>classify(word,category,letter).status==='accepted');
