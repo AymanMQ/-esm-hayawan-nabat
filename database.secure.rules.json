@@ -56,6 +56,14 @@
           ".write": false
         }
       }
+    },
+    "ballots": {
+      "$room": {
+        "$round": {
+          ".read": false,
+          ".write": false
+        }
+      }
     }
   }
 }
