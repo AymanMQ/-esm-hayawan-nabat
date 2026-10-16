@@ -3,7 +3,7 @@
  */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.TournamentProgression=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
-const {advanceRound}=typeof require==='function'?require('./tournament-bracket'):root.TournamentBracket;
+const {advanceRound}=typeof require==='function'?require('./tournament-bracket'):globalThis.TournamentBracket;
 function startBracket(plan,eventId){
  if(!plan||plan.status!=='ready'||!Array.isArray(plan.openingMatches)||!plan.openingMatches.length)throw Error('No finalized bracket');
  const matches=plan.openingMatches.map(m=>({id:eventId+'-r1-m'+m.matchNumber,matchNumber:m.matchNumber,players:m.players.slice(),status:'pending',scores:null}));
