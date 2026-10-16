@@ -1,0 +1,25 @@
+/* دفتر الذكريات — theme shared by solo and multiplayer pages */
+:root{--notebook-ink:#314661;--notebook-red:#bd706c;--notebook-paper:#f8f0d9;--notebook-rule:rgba(89,138,155,.24)}
+body{background:#b8ae98;color:var(--notebook-ink)}
+.page{position:relative;isolation:isolate;min-height:100dvh;max-width:650px;padding:18px 24px 54px!important;background:
+linear-gradient(to left,transparent 0 41px,rgba(183,75,72,.5) 41px 43px,transparent 43px),
+repeating-linear-gradient(to bottom,transparent 0 33px,var(--notebook-rule) 34px 35px,transparent 36px),
+radial-gradient(ellipse at 10% 0%,#fff9e8 0%,transparent 68%),var(--notebook-paper)!important;
+border:1px solid #b1a18a!important;border-radius:3px!important;box-shadow:0 7px 25px rgba(45,33,20,.22);overflow:hidden}
+.page::before{content:"";position:absolute;inset:6px;z-index:-1;border:1px solid rgba(104,77,62,.26);pointer-events:none}
+.page::after{content:"❀     ✿     ❀";position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#bb807c;font-size:15px;letter-spacing:15px;pointer-events:none}
+.notebook-heading{position:relative;border:2px double #8c8072;background:rgba(255,252,239,.7);padding:10px 13px 15px;margin:7px 0 20px;box-shadow:inset 0 0 0 4px rgba(142,112,91,.08)}
+.notebook-heading::before,.notebook-heading::after{content:"❧";position:absolute;top:7px;color:#ac7770;font-size:18px}.notebook-heading::before{right:9px}.notebook-heading::after{left:9px;transform:scaleX(-1)}
+.notebook-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:#675d54;border-bottom:1px dashed #bca88b;padding:7px 15px}
+.notebook-heading h1{font-size:clamp(30px,8vw,46px)!important;line-height:1.35!important;margin:10px 0 2px!important;color:#3b536c;text-shadow:1px 2px #e9d9bc!important}
+.notebook-subject{text-align:center;font-size:13px;color:#8d554d;font-weight:bold}
+.page .card{background:rgba(255,251,237,.89)!important;border:1px solid #ab9a7e!important;border-radius:4px!important;box-shadow:3px 4px rgba(106,93,70,.14)!important}
+.page .btn{background:#e9d19c;border:1px solid #8b7359!important;border-radius:6px!important;box-shadow:2px 3px rgba(115,98,75,.2)!important;color:#35495f}
+.page .btn.alt,.page .btn.secondary{background:#e2e9dc}
+.page input,.page select{background:#fffbef;border:1px solid #b7a78c;border-bottom:2px solid #718da2;border-radius:3px!important}
+.page h2{color:#6f4948}.page .letter{color:#a9584d!important;text-shadow:2px 2px #e9d6bf}
+.page .pill{background:#eee0b8;border-radius:3px}.page .muted{color:#675e56}
+.page section:not(.hidden):not(.hide){animation:pageIn .24s ease-out both}
+@keyframes pageIn{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.page section{animation:none!important}*{scroll-behavior:auto!important}}
+@media(max-width:430px){.page{padding:12px 15px 45px!important}.notebook-meta{font-size:11px}.page .btn{min-height:46px}}
