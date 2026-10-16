@@ -51,7 +51,7 @@ exports.challengeAnswer=onCall(options,async request=>{
  if(s.phase!=='review'||!s.players?.[author]||author===uid)throw new HttpsError('failed-precondition','الاعتراض غير متاح');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
  if(!review||review.status!=='review'||Date.now()>=review.closesAt||!review.answers?.[author]?.[category])throw new HttpsError('failed-precondition','انتهت المراجعة أو الإجابة فارغة');
- const tx=await ref.transaction(v=>{if(!v||v.status!=='review'||Date.now()>=v.closesAt||v.challenges?.[author]?.[category])return;v.challenges??={};v.challenges[author]??={};v.challenges[author][category]={openedBy:uid,openedAt:Date.now(),votes:{}};return v;});
+ const tx=await ref.transaction(v=>{if(!v||v.status!=='review'||Date.now()>=v.closesAt||v.challenges?.[author]?.[category])return;v.challenges??={};v.challenges[author]??={};v.challenges[author][category]={openedBy:uid,openedAt:Date.now()};return v;});
  return {ok:true,created:tx.committed};
 });
 exports.voteAnswer=onCall(options,async request=>{
@@ -61,8 +61,10 @@ exports.voteAnswer=onCall(options,async request=>{
  if(s.phase!=='review'||!s.players?.[author]||author===uid)throw new HttpsError('failed-precondition','لا يمكنك التصويت');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
  if(!review||review.status!=='review'||Date.now()>=review.closesAt||!review.challenges?.[author]?.[category])throw new HttpsError('failed-precondition','التصويت غير متاح');
- const tx=await ref.transaction(v=>{if(!v||v.status!=='review'||Date.now()>=v.closesAt||!v.challenges?.[author]?.[category]||Object.prototype.hasOwnProperty.call(v.challenges[author][category].votes||{},uid))return;v.challenges[author][category].votes??={};v.challenges[author][category].votes[uid]=accept;return v;});
- if(!tx.committed)throw new HttpsError('failed-precondition','انتهى التصويت أو سبق أن صوتّت');
+ // Ballots are stored outside the publicly readable review snapshot.
+ const ballotRef=db.ref('ballots/'+room+'/'+round+'/'+author+'/'+category+'/'+uid);
+ const tx=await ballotRef.transaction(v=>v===null?{accept,castAt:Date.now()}:undefined);
+ if(!tx.committed)throw new HttpsError('already-exists','سبق أن صوتّت');
  return {ok:true};
 });
 exports.finalizeReview=onCall(options,async request=>{
@@ -74,10 +76,13 @@ exports.finalizeReview=onCall(options,async request=>{
  const close=await ref.child('status').transaction(v=>v==='review'?'closed':undefined);
  if(!close.committed&&review.status!=='closed')throw new HttpsError('failed-precondition','المراجعة غير متاحة');
  const closed=(await ref.get()).val(),ids=Object.keys(s.players),decisions={};
+ const ballots=(await db.ref('ballots/'+room+'/'+round).get()).val()||{};
  for(const [author,byCategory] of Object.entries(closed.challenges||{})){
    for(const [category,challenge] of Object.entries(byCategory||{})){
      if(!CATEGORIES.includes(category)||!ids.includes(author))continue;
-     (decisions[author]??={})[category]=voteDecision(challenge.votes||{},author,ids).accepted;
+     const cast=ballots[author]?.[category]||{},votes={};
+     for(const [voter,ballot] of Object.entries(cast))if(ids.includes(voter)&&voter!==author&&typeof ballot?.accept==='boolean'&&ballot.castAt<=closed.closesAt)votes[voter]=ballot.accept;
+     (decisions[author]??={})[category]=voteDecision(votes,author,ids).accepted;
    }
  }
  const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter);
