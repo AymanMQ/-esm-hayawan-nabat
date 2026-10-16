@@ -75,7 +75,7 @@ exports.finalizeReview=onCall(options,async request=>{
  if(!review||Date.now()<review.closesAt)throw new HttpsError('failed-precondition','التصويت لم ينتهِ');
  // Close review atomically, preventing additional votes.
  const close=await ref.child('status').transaction(v=>v==='review'?'closed':undefined);
- if(!close.committed&&review.status!=='closed')throw new HttpsError('failed-precondition','المراجعة غير متاحة');
+ if(!close.committed){const latest=(await ref.child('status').get()).val();if(latest!=='closed')throw new HttpsError('failed-precondition','المراجعة غير متاحة')}
  const closed=(await ref.get()).val(),ids=Object.keys(s.players),decisions={};
  const ballots=(await db.ref('ballots/'+room+'/'+round).get()).val()||{};
  for(const [author,byCategory] of Object.entries(closed.challenges||{})){
