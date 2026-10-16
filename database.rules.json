@@ -24,7 +24,7 @@
         "$round": {
           "$uid": {
             ".read": "auth != null && auth.uid === $uid",
-            ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('rooms').child($room).child('players').child($uid).exists() && root.child('rooms').child($room).child('round').val() === $round * 1 && root.child('rooms').child($room).child('phase').val() === 'playing' && now <= root.child('rooms').child($room).child('endsAt').val() + 3000",
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('rooms').child($room).child('players').child($uid).exists() && root.child('rooms').child($room).child('phase').val() === 'playing' && now <= root.child('rooms').child($room).child('endsAt').val() + 3000",
             ".validate": "newData.hasChildren(['answers', 'submittedAt']) && newData.child('answers').hasChildren(['اسم','حيوان','نبات','جماد','بلاد'])"
           }
         }
