@@ -16,5 +16,24 @@ function planTournament(playerIds,groupSize,limit=625){
  return {status:'ready',groupSize,capacity,waitlist,rounds:roundsFor(capacity,groupSize),openingMatches:matches};
 }
 function resolveMatch(players,scores){if(!Array.isArray(players)||!players.length)throw Error('Missing players');const entries=players.map(id=>({id,score:scores?.[id]}));if(entries.some(x=>!Number.isFinite(x.score)||x.score<0))throw Error('Unverified score');const highest=Math.max(...entries.map(x=>x.score)),leaders=entries.filter(x=>x.score===highest).map(x=>x.id);return leaders.length===1?{status:'winner',winner:leaders[0],score:highest}:{status:'tiebreak',players:leaders,score:highest};}
-return {GROUP_SIZES,capacityFor,roundsFor,planTournament,resolveMatch};
+function advanceRound(matches,scoresByMatch,groupSize){
+ validateGroupSize(groupSize);
+ if(!Array.isArray(matches)||!matches.length)throw Error('Missing matches');
+ const winners=[],tiebreaks=[];
+ matches.forEach((match,index)=>{
+   if(!Array.isArray(match.players)||match.players.length!==groupSize||new Set(match.players).size!==groupSize)throw Error('Invalid match');
+   const scores=scoresByMatch?.[match.matchNumber];
+   if(!scores)throw Error('Match scores not yet verified');
+   const result=resolveMatch(match.players,scores);
+   if(result.status==='tiebreak')tiebreaks.push({matchNumber:match.matchNumber,players:result.players});
+   else winners.push(result.winner);
+ });
+ if(tiebreaks.length)return {status:'tiebreak',tiebreaks,winners:[]};
+ if(winners.length===1)return {status:'champion',champion:winners[0],winners};
+ if(winners.length%groupSize!==0)throw Error('Invalid bracket progression');
+ const nextMatches=[];
+ for(let i=0;i<winners.length;i+=groupSize)nextMatches.push({matchNumber:i/groupSize+1,players:winners.slice(i,i+groupSize)});
+ return {status:'next_round',winners,nextMatches};
+}
+return {GROUP_SIZES,capacityFor,roundsFor,planTournament,resolveMatch,advanceRound};
 });
