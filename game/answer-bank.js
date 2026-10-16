@@ -24,6 +24,6 @@ Object.assign(words,{
 
 const normalize=s=>String(s||'').trim().replace(/[\u064B-\u065F\u0670ـ]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/\s+/g,' ');
 const byCategory=Object.fromEntries(Object.entries(words).map(([c,arr])=>[c,new Set(arr.map(normalize))]));
-function classify(answer,category,letter){const key=normalize(answer),initial=normalize(letter);if(!key)return {status:'empty',reason:'خانة فارغة'};if(!key.startsWith(initial))return {status:'invalid',reason:'لا تبدأ بالحرف المطلوب'};if(byCategory[category]?.has(key))return {status:'accepted',reason:'موجودة في بنك الفئة'};const elsewhere=Object.entries(byCategory).filter(([c,set])=>c!==category&&set.has(key)).map(([c])=>c);if(elsewhere.length)return {status:'invalid',reason:'هذه الكلمة معروفة في فئة '+elsewhere.join('، ')+' وليست معتمدة هنا'};return {status:'review',reason:'غير موجودة في البنك المبدئي وتحتاج مراجعة'};}
+function classify(answer,category,letter){const key=normalize(answer),initial=normalize(letter);if(!key)return {status:'empty',reason:'خانة فارغة'};if(!key.startsWith(initial))return {status:'invalid',reason:'لا تبدأ بالحرف المطلوب'};if(byCategory[category]?.has(key))return {status:'accepted',reason:'موجودة في بنك الفئة'};const elsewhere=Object.entries(byCategory).filter(([c,set])=>c!==category&&set.has(key)).map(([c])=>c);if(elsewhere.length)return {status:'review',reason:'الكلمة موجودة في فئة أخرى؛ يجب التأكد من صحة معناها هنا'};return {status:'review',reason:'غير موجودة في البنك المبدئي وتحتاج مراجعة'};}
 return {classify,normalize,words};
 });
