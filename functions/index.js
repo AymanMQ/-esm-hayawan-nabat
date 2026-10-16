@@ -5,6 +5,7 @@ const {getDatabase}=require('firebase-admin/database');
 const {initializeApp}=require('firebase-admin/app');
 const {scoreRound,CATEGORIES,voteDecision,LETTERS}=require('./lib/letters-engine');
 const {DEFAULT,PRESETS,validate,propose}=require('./lib/categories');
+const {classify}=require('./lib/answer-bank');
 const activeCats=s=>validate(s?.roundCategories||s?.categories||DEFAULT);
 initializeApp();
 const db=getDatabase();
@@ -88,7 +89,7 @@ exports.finalizeReview=onCall(options,async request=>{
      (decisions[author]??={})[category]=voteDecision(votes,author,ids).accepted;
    }
  }
- const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter,activeCats(s));
+ const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter,activeCats(s),(word,category,letter)=>classify(word,category,letter).status==='accepted');
  // Idempotent room totals transaction; cannot award points twice for the same round.
  const roomRef=db.ref('rooms/'+room);
  const tx=await roomRef.transaction(v=>{
