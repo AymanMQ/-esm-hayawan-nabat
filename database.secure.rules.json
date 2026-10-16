@@ -64,6 +64,12 @@
           ".write": false
         }
       }
+    },
+    "candidateAnswers": {
+      "$candidate": {
+        ".read": false,
+        ".write": false
+      }
     }
   }
 }
