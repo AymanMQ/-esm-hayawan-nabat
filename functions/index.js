@@ -5,7 +5,7 @@ const {onCall,HttpsError}=require('firebase-functions/v2/https');
 const {getDatabase}=require('firebase-admin/database');
 const {initializeApp}=require('firebase-admin/app');
 initializeApp();
-const {scoreRound,normalize,matchesLetter,CATEGORIES,voteDecision}=require('../game/letters-engine');
+const {scoreRound,normalize,matchesLetter,CATEGORIES,voteDecision}=require('./lib/letters-engine');
 const db=getDatabase();
 const requireUser=request=>{if(!request.auth?.uid)throw new HttpsError('unauthenticated','سجل الدخول أولًا');return request.auth.uid;};
 const safeCode=s=>{if(typeof s!=='string'||!/^[A-Z2-9]{6}$/.test(s))throw new HttpsError('invalid-argument','كود غير صالح');return s;};
