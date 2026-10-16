@@ -11,7 +11,7 @@ const requireUser=r=>{if(!r.auth?.uid)throw new HttpsError('unauthenticated','ا
 function eventArgs(data,now){
  const startsAt=data?.startsAt,groupSize=data?.groupSize;
  if(![2,3,5].includes(groupSize)||!Number.isSafeInteger(startsAt))throw new HttpsError('invalid-argument','نوع البطولة أو موعدها غير صحيح');
- if(startsAt%3600000!==0||startsAt<now||startsAt>now+24*3600000)throw new HttpsError('failed-precondition','التسجيل خارج المواعيد القادمة');
+ if(startsAt%3600000!==0||startsAt<now-2*3600000||startsAt>now+24*3600000)throw new HttpsError('failed-precondition','التسجيل خارج المواعيد القادمة');
  return {id:eventId(startsAt,groupSize),startsAt,groupSize,closesAt:startsAt-60000};
 }
 exports.registerTournament=onCall(options,async request=>{
