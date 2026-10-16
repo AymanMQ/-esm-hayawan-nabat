@@ -176,3 +176,40 @@ exports.updateCategories=onCall(options,async request=>{
  if(!tx.committed)throw new HttpsError('failed-precondition','يمكن تعديل الأعمدة قبل الجولة فقط');
  return {ok:true};
 });
+
+// Moderation endpoints: deny by default unless a verified Firebase Auth UID is explicitly configured.
+// Set ADMIN_UIDS in the Functions runtime environment, never from client UI or GitHub Pages.
+const moderatorUIDs=()=>new Set(String(process.env.ADMIN_UIDS||'').split(',').map(x=>x.trim()).filter(Boolean));
+const requireModerator=request=>{const uid=uidOf(request);if(!moderatorUIDs().has(uid))throw new HttpsError('permission-denied','هذه الصفحة مخصصة للمشرف');return uid};
+const candidateIdOf=value=>{if(typeof value!=='string'||value.length>300||!/^[A-Za-z0-9_%-]+$/.test(value))throw new HttpsError('invalid-argument','معرف كلمة غير صالح');return value};
+exports.listCandidateAnswers=onCall(options,async request=>{
+ requireModerator(request);
+ const all=(await db.ref('candidateAnswers').get()).val()||{};
+ return {items:Object.entries(all).filter(([,v])=>v&&v.status==='pending').slice(0,200).map(([id,v])=>({
+   id,word:v.word,category:v.category,normalized:v.normalized,status:v.status,
+   independentRooms:Object.keys(v.rooms||{}).length,
+   appearances:Object.values(v.rooms||{}).reduce((n,rounds)=>n+Object.keys(rounds||{}).length,0)
+ }))};
+});
+exports.moderateCandidateAnswer=onCall(options,async request=>{
+ const moderator=requireModerator(request),id=candidateIdOf(request.data?.id),decision=request.data?.decision;
+ if(!['approve','reject'].includes(decision))throw new HttpsError('invalid-argument','قرار غير صالح');
+ const ref=db.ref('candidateAnswers/'+id),existing=(await ref.get()).val();
+ if(!existing)throw new HttpsError('not-found','الكلمة غير موجودة');
+ if(existing.status==='approved'&&decision==='approve'){
+   // Retry completion if a previous write succeeded only halfway.
+   await db.ref('approvedAnswers/'+id).set({word:existing.word,normalized:existing.normalized,category:existing.category,locale:existing.locale||'ar',approvedAt:existing.reviewedAt,source:'manual'});
+   return {ok:true,status:'approved'};
+ }
+ if(existing.status!=='pending')throw new HttpsError('failed-precondition','تمت مراجعة الكلمة مسبقًا');
+ const changed=await ref.transaction(v=>{
+   if(!v||v.status!=='pending')return;
+   return {...v,status:decision==='approve'?'approved':'rejected',reviewedBy:moderator,reviewedAt:Date.now()};
+ });
+ if(!changed.committed)throw new HttpsError('aborted','تم تعديل الطلب في الوقت نفسه');
+ const reviewed=changed.snapshot.val();
+ if(decision==='approve'){
+   await db.ref('approvedAnswers/'+id).set({word:reviewed.word,normalized:reviewed.normalized,category:reviewed.category,locale:reviewed.locale||'ar',approvedAt:reviewed.reviewedAt,source:'manual'});
+ }
+ return {ok:true,status:reviewed.status};
+});
