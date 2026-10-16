@@ -75,3 +75,9 @@ repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transpar
 .page #answers .answer .answer-separator{color:#5d5550;margin:0 5px}
 #myCount{font:600 14px Arial,Tahoma,sans-serif!important;color:#315a43!important}
 @media(max-width:450px){.page #fields input{font-size:21px!important;height:53px!important}}
+
+/* Chat-style readable bold text for player input, native system font on each device. */
+.page #fields input{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:25px!important;font-weight:700!important;line-height:1.5!important;height:62px!important;color:#183a63!important;-webkit-text-fill-color:#183a63!important}
+.page #fields input::placeholder{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:17px!important;font-weight:500!important}
+.page #answers .answer .player-ink,.page #answers .answer .opponent-ink{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:21px!important;font-weight:700!important}
+@media(max-width:450px){.page #fields input{font-size:24px!important;height:60px!important}}
