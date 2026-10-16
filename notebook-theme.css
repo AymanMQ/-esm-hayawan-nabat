@@ -79,3 +79,13 @@ repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transpar
 body[data-writing-style="clear"] #fields input,body[data-writing-style="clear"] #writingSample{font-family:Tahoma,Arial,sans-serif!important;font-size:23px!important}
 body[data-writing-style="hand"] #fields input{font-family:"Reem Kufi Ink",Tahoma,sans-serif!important}
 #myCount{text-align:start!important;font-size:14px!important;color:#326c51!important}
+
+
+/* User-selectable ink style, without changing app labels. */
+html[data-writing-style="hand"] #fields input,
+html[data-writing-style="hand"] #writingSample{font-family:"Reem Kufi Ink",Tahoma,sans-serif!important;font-size:29px!important;line-height:1.9!important}
+html[data-writing-style="clear"] #fields input,
+html[data-writing-style="clear"] #writingSample{font-family:Tahoma,Arial,sans-serif!important;font-size:23px!important;line-height:1.55!important;font-weight:400!important}
+.writing-preview{margin:12px 0 20px;display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid #779bb0;color:#6a5d51}
+#writingSample{color:#20538b}
+#myCount{text-align:right;font-size:14px;font-weight:bold}
