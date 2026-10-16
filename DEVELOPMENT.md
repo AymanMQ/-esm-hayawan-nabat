@@ -37,3 +37,11 @@ Avoid publishing user-provided Firebase admin keys, service account JSON, or cre
 - Room totals are guarded by `lastScoredRound` in an RTDB transaction to prevent double awards.
 - **Deployment is blocked** until rules are redesigned for callable-only submissions and phase changes, callable endpoints are integrated into the web UI, and emulator tests verify permission boundaries and concurrent finalization.
 - **Do not assume GitHub Pages serves multiplayer end-to-end.** This commit is backend source only.
+
+## Privacy hardening update
+- Individual votes are now written to `ballots/{room}/{round}/{author}/{category}/{voter}`, not the player-readable `reviews` tree.
+- `database.secure.rules.json` explicitly denies client read/write access to ballots.
+- Server finalization collects eligible ballots and applies the same majority / tie-accept logic.
+- The vote UI now allows cancelling without automatically casting a rejection.
+- This is source-code work only; no Firebase deploy or end-to-end multiplayer test has been performed.
+- **Known race still to resolve before production:** finalization closing the review and ballot submission use separate paths; a ballot near the deadline could race the close. Use server-side atomic state management or a stricter timestamp cut-off and emulator concurrency tests.
