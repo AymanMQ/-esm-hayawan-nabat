@@ -61,6 +61,7 @@ exports.voteAnswer=onCall(options,async request=>{
  if(s.phase!=='review'||!s.players?.[author]||author===uid)throw new HttpsError('failed-precondition','لا يمكنك التصويت');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
  if(!review||review.status!=='review'||Date.now()>=review.closesAt||!review.challenges?.[author]?.[category])throw new HttpsError('failed-precondition','التصويت غير متاح');
+ if(review.challenges[author][category].openedAt>Date.now())throw new HttpsError('failed-precondition','اعتراض غير صالح');
  // Ballots are stored outside the publicly readable review snapshot.
  const ballotRef=db.ref('ballots/'+room+'/'+round+'/'+author+'/'+category+'/'+uid);
  const tx=await ballotRef.transaction(v=>v===null?{accept,castAt:Date.now()}:undefined);
