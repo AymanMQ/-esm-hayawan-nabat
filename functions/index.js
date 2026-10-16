@@ -6,6 +6,7 @@ const {initializeApp}=require('firebase-admin/app');
 const {scoreRound,CATEGORIES,voteDecision,LETTERS}=require('./lib/letters-engine');
 const {DEFAULT,PRESETS,validate,propose}=require('./lib/categories');
 const {classify}=require('./lib/answer-bank');
+const {keyFor,candidatesFromReview}=require('./lib/candidate-words');
 const activeCats=s=>validate(s?.roundCategories||s?.categories||DEFAULT);
 initializeApp();
 const db=getDatabase();
@@ -111,6 +112,25 @@ exports.finalizeReview=onCall(options,async request=>{
  });
  if(!tx.committed){const latest=(await roomRef.get()).val();if(latest?.lastScoredRound===round)return {ok:true,alreadyFinalized:true,scores:latest.roundScores||{}};throw new HttpsError('aborted','تعذر اعتماد النتائج؛ تحقق من حالة الروم')}
  await ref.child('results').set({scores,details,decisions,finalizedAt:Date.now()});
+ // Persist candidate evidence by independent room, idempotently, never as approval.
+ // Best effort: scoring must never depend on candidate ingestion.
+ try {
+   const candidates=candidatesFromReview(closed.answers,decisions,s.letter,classify,activeCats(s));
+   for(const item of candidates){
+     const id=keyFor(item.category,item.word);
+     const candidateRef=db.ref('candidateAnswers/'+id);
+     await candidateRef.transaction(existing=>{
+       const current=existing||{word:item.word,normalized:item.normalized,category:item.category,locale:'ar',status:'pending',rooms:{}};
+       if(current.status!=='pending')return;
+       const rooms=current.rooms||{};
+       const evidence=rooms[room]||{};
+       if(evidence[round])return;
+       const next={...evidence,[round]:{accepted:item.accepted,rejected:item.rejected,seenAt:Date.now()}};
+       return {...current,rooms:{...rooms,[room]:next},lastSeenAt:Date.now()};
+     });
+   }
+ } catch(err){console.error('Candidate recording failed:',err?.message||err)}
+
  return {ok:true,scores};
 });
 
