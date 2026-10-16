@@ -218,3 +218,6 @@ exports.moderateCandidateAnswer=onCall(options,async request=>{
  }
  return {ok:true,status:reviewed.status};
 });
+
+// Prototype tournament callable handlers (not deployed).
+Object.assign(exports,require('./tournaments'));
