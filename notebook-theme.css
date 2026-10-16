@@ -23,3 +23,12 @@ border:1px solid #b1a18a!important;border-radius:3px!important;box-shadow:0 7px 
 @keyframes pageIn{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.page section{animation:none!important}*{scroll-behavior:auto!important}}
 @media(max-width:430px){.page{padding:12px 15px 45px!important}.notebook-meta{font-size:11px}.page .btn{min-height:46px}}
+
+/* Writing lines, not table cells */
+#fields{margin:12px 0 22px}
+#fields label{display:block;margin:15px 0 2px!important;color:#725a4d;font-size:15px}
+#fields input{display:block;width:100%;height:42px;padding:6px 4px!important;margin:0 0 6px!important;background:transparent!important;border:0!important;border-bottom:1px solid #7899aa!important;border-radius:0!important;box-shadow:none!important;font-size:21px;outline:none}
+#fields input:focus{border-bottom:2px solid #b76c65!important;background:rgba(255,255,255,.15)!important}
+#answers{display:block!important}
+#answers .answer{background:transparent!important;border:0!important;border-bottom:1px solid #93a9aa!important;border-radius:0!important;margin:6px 0;padding:10px 3px!important;box-shadow:none!important}
+#answers .answer strong{display:inline-block!important;min-width:68px;margin-left:12px;color:#7b534e}
