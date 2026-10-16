@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id),cats=['اسم','حيوان','نبات','جماد','بلاد'];let db,fn,uid,room,roomRef,roomListener,reviewRef,reviewListener,offset=0,round=0,deadline=0,ticker=null,submitted=false,players={},host=false,currentPhase='',lastRound=0,reviewData=null;
+const $=id=>document.getElementById(id),categoryRules=window.GameCategories;let cats=[...categoryRules.DEFAULT];let db,fn,uid,room,roomRef,roomListener,reviewRef,reviewListener,offset=0,round=0,deadline=0,ticker=null,submitted=false,players={},host=false,currentPhase='',lastRound=0,reviewData=null,latestCategories=[...cats];
 const show=id=>['welcome','lobby','game','done','review','scores'].forEach(x=>$(x)?.classList.toggle('hide',x!==id));
 function msg(e){$('error').textContent=typeof e==='string'?e:(e.message||String(e));$('error').classList.remove('hide')}
 function clear(){ $('error').classList.add('hide')}
@@ -11,8 +11,51 @@ function code(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from
 async function create(){clear();try{const n=name();await init();let created;for(let i=0;i<12;i++){const k=code(),r=db.ref('rooms/'+k);const tx=await r.transaction(v=>v===null?{host:uid,phase:'waiting',round:0,players:{[uid]:{name:n,joinedAt:firebase.database.ServerValue.TIMESTAMP}}}:undefined,undefined,false);if(tx.committed){created=k;break}}if(!created)throw Error('تعذر إنشاء الروم');watch(created)}catch(e){msg(e)}}
 async function join(){clear();try{const n=name();await init();const k=$('codeInput').value.trim().toUpperCase();if(!/^[A-Z2-9]{6}$/.test(k))throw Error('أدخل كودًا من ٦ رموز');const r=db.ref('rooms/'+k),s=(await r.once('value')).val();if(!s)throw Error('الروم غير موجود');if(s.phase!=='waiting'&&!s.players?.[uid])throw Error('اللعبة بدأت، انتظر الجولة القادمة');await r.child('players/'+uid).set({name:n,joinedAt:firebase.database.ServerValue.TIMESTAMP});watch(k)}catch(e){msg(e)}}
 function stopWatch(){if(roomRef&&roomListener)roomRef.off('value',roomListener);if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);roomRef=reviewRef=null;roomListener=reviewListener=null;clearInterval(ticker)}
-function watch(k){stopWatch();room=k;show('lobby');roomRef=db.ref('rooms/'+k);roomListener=roomRef.on('value',s=>{const v=s.val();if(!v){msg('أُغلق الروم');show('welcome');return}players=v.players||{};host=v.host===uid;round=v.round||0;currentPhase=v.phase;$('roomCode').textContent=k;$('players').replaceChildren();Object.entries(players).forEach(([id,p])=>{const tag=document.createElement('span');tag.className='person';tag.textContent=(id===v.host?'👑 ':'')+p.name;$('players').append(tag)});$('start').classList.toggle('hide',!host||!['waiting','results'].includes(v.phase)||round>=5);$('status').textContent=v.phase==='waiting'?'ننتظر المضيف يبدأ الجولة…':v.phase==='playing'?'الجولة جارية':v.phase==='review'?'وقت مراجعة الإجابات':'انتهت الجولة';if(v.phase==='playing'){if(lastRound!==round){if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);reviewRef=null;reviewListener=null;reviewData=null;lastRound=round;begin(v)}else if(!submitted)show('game')}else if(v.phase==='review'){listenReview();show('review')}else if(v.phase==='results'){listenReview();show('scores');renderScores(v)}else show('lobby')});}
-function begin(v){clearInterval(ticker);submitted=false;deadline=v.endsAt;$('submit').disabled=false;$('saveState').textContent='';$('round').textContent=v.round;$('letter').textContent=v.letter;$('fields').replaceChildren();cats.forEach((cat,i)=>{const label=document.createElement('label');label.htmlFor='f'+i;label.textContent=cat;const input=document.createElement('input');input.id='f'+i;input.maxLength=60;input.placeholder='اكتب '+cat+'…';$('fields').append(label,input)});show('game');tick();ticker=setInterval(tick,250)}
+function watch(k){stopWatch();room=k;show('lobby');roomRef=db.ref('rooms/'+k);roomListener=roomRef.on('value',s=>{const v=s.val();if(!v){msg('أُغلق الروم');show('welcome');return}players=v.players||{};host=v.host===uid;round=v.round||0;currentPhase=v.phase;latestCategories=v.categories||categoryRules.DEFAULT;cats=v.roundCategories||latestCategories;renderCategorySetup(v);$('roomCode').textContent=k;$('players').replaceChildren();Object.entries(players).forEach(([id,p])=>{const tag=document.createElement('span');tag.className='person';tag.textContent=(id===v.host?'👑 ':'')+p.name;$('players').append(tag)});$('start').classList.toggle('hide',!host||!['waiting','results'].includes(v.phase)||round>=5);$('status').textContent=v.phase==='waiting'?'ننتظر المضيف يبدأ الجولة…':v.phase==='playing'?'الجولة جارية':v.phase==='review'?'وقت مراجعة الإجابات':'انتهت الجولة';if(v.phase==='playing'){if(lastRound!==round){if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);reviewRef=null;reviewListener=null;reviewData=null;lastRound=round;begin(v)}else if(!submitted)show('game')}else if(v.phase==='review'){listenReview();show('review')}else if(v.phase==='results'){listenReview();show('scores');renderScores(v)}else show('lobby')});}
+function renderCategorySetup(state){
+ const editable=host&&['waiting','results'].includes(state.phase)&&state.round<5;
+ const allowed=['waiting','results'].includes(state.phase)&&state.round<5;
+ $('categorySetup').classList.toggle('hide',!allowed);
+ $('hostCategories').classList.toggle('hide',!editable);
+ $('categoryList').replaceChildren();
+ for(const cat of latestCategories){
+  const item=document.createElement('span');item.className='category-chip';item.textContent=cat;
+  if(editable&&latestCategories.length>3){
+   const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.title='إزالة '+cat;
+   remove.onclick=()=>setCategories(latestCategories.filter(c=>c!==cat));item.append(remove);
+  }
+  $('categoryList').append(item);
+ }
+ $('categoryPresets').replaceChildren();
+ if(editable)for(const cat of categoryRules.PRESETS){
+  if(latestCategories.includes(cat))continue;
+  const button=document.createElement('button');button.type='button';button.className='btn secondary';button.style.width='auto';button.textContent='+ '+cat;
+  button.disabled=latestCategories.length>=categoryRules.MAX_CATEGORIES;
+  button.onclick=()=>setCategories([...latestCategories,cat]);$('categoryPresets').append(button);
+ }
+ $('categorySuggestion').disabled=!allowed;
+ $('sendProposal').disabled=!allowed;
+ $('proposals').replaceChildren();
+ for(const [proposalId,p] of Object.entries(state.proposals||{})){
+  if(p.status!=='pending')continue;
+  const item=document.createElement('div');item.className='proposal';
+  const title=document.createElement('strong');title.textContent=p.name+' — اقتراح من '+(players[p.author]?.name||'مشارك');item.append(title);
+  if(editable){
+   for(const [label,accept] of [['موافق ✓',true],['رفض ×',false]]){
+    const button=document.createElement('button');button.type='button';button.className='btn secondary';button.textContent=label;
+    button.onclick=()=>decideProposal(proposalId,accept);item.append(button);
+   }
+  }
+  $('proposals').append(item);
+ }
+ $('categoryNote').textContent=editable?'أنت المضيف: يمكنك تعديل الورقة الآن.':'أي تعديل يحتاج موافقة المضيف قبل الجولة.';
+}
+async function setCategories(categories){try{await call('updateCategories',{room,categories})}catch(e){msg(e)}}
+async function proposeCategory(){
+ try{const name=categoryRules.propose($('categorySuggestion').value,latestCategories);await call('proposeCategory',{room,name});$('categorySuggestion').value=''}catch(e){msg(e)}
+}
+async function decideProposal(proposalId,accept){try{await call('decideCategoryProposal',{room,proposalId,accept})}catch(e){msg(e)}}
+function begin(v){cats=categoryRules.validate(v.roundCategories||categoryRules.DEFAULT);clearInterval(ticker);submitted=false;deadline=v.endsAt;$('submit').disabled=false;$('saveState').textContent='';$('round').textContent=v.round;$('letter').textContent=v.letter;$('fields').replaceChildren();cats.forEach((cat,i)=>{const label=document.createElement('label');label.htmlFor='f'+i;label.textContent=cat;const input=document.createElement('input');input.id='f'+i;input.maxLength=60;input.placeholder='اكتب '+cat+'…';$('fields').append(label,input)});show('game');tick();ticker=setInterval(tick,250)}
 function tick(){if(submitted)return;const n=Math.max(0,Math.ceil((deadline-Date.now()-offset)/1000));$('clock').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');if(n===0){clearInterval(ticker);submit();if(host){$('openReview').classList.remove('hide')}}}
 async function start(){clear();try{$('start').disabled=true;await call('startRound',{room})}catch(e){msg(e)}finally{$('start').disabled=false}}
 async function submit(){if(submitted||!room)return;submitted=true;clearInterval(ticker);$('submit').disabled=true;const answers={};cats.forEach((cat,i)=>answers[cat]=$('f'+i).value.trim());try{await call('submitAnswers',{room,round,answers});show('done')}catch(e){msg(e);$('saveState').textContent='تعذر التسليم؛ قد يكون الوقت انتهى';show('done')}}
@@ -24,6 +67,6 @@ async function openReview(){try{await call('openReview',{room,round})}catch(e){m
 async function finalize(){try{await call('finalizeReview',{room,round})}catch(e){msg(e)}}
 let latestRoomState=null;function renderScores(state){if(state)latestRoomState=state;const box=$('scoreRows');box.replaceChildren();const totals=latestRoomState?.totals||{};Object.entries(players).sort((a,b)=>(totals[b[0]]||0)-(totals[a[0]]||0)).forEach(([id,p],i)=>{const row=document.createElement('p');row.textContent=(i+1)+'. '+p.name+' — '+(totals[id]||0)+' نقطة';box.append(row)});$('nextRound').classList.toggle('hide',!host||round>=5);$('gameOver').textContent=round>=5?'خلصت المباراة! 🏆':'انتهت الجولة — الجولة التالية عند المضيف'}
 function leave(){stopWatch();room=null;lastRound=0;submitted=false;show('welcome')}
-$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;
+$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;$('sendProposal').onclick=proposeCategory;$('resetCategories').onclick=()=>setCategories(categoryRules.DEFAULT);
 setInterval(()=>{if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&submitted&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide')},1000);
 })();
