@@ -89,3 +89,7 @@ html[data-writing-style="clear"] #writingSample{font-family:Tahoma,Arial,sans-se
 .writing-preview{margin:12px 0 20px;display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid #779bb0;color:#6a5d51}
 #writingSample{color:#20538b}
 #myCount{text-align:right;font-size:14px;font-weight:bold}
+
+/* Default input: crisp, readable Arabic typography. Vintage paper remains in the background. */
+#fields input,html[data-writing-style="hand"] #fields input,html[data-writing-style="clear"] #fields input{font-family:Tahoma,Arial,sans-serif!important;font-size:23px!important;font-weight:400!important;line-height:1.55!important;height:55px!important;color:#194a80!important;-webkit-text-fill-color:#194a80!important;letter-spacing:0!important}
+#answers .answer .player-ink,#answers .answer .opponent-ink{font-family:Tahoma,Arial,sans-serif!important;font-size:19px!important}
