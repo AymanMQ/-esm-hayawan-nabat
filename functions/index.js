@@ -72,7 +72,7 @@ exports.finalizeReview=onCall(options,async request=>{
  const uid=uidOf(request),room=codeOf(request.data?.room),round=roundOf(request.data?.round),s=await stateFor(room,round,uid);
  if(s.host!==uid||s.phase!=='review')throw new HttpsError('failed-precondition','فقط المضيف يمكنه إنهاء المراجعة');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
- if(!review||Date.now()<review.closesAt)throw new HttpsError('failed-precondition','التصويت لم ينتهِ');
+ if(!review||Date.now()<review.closesAt+2500)throw new HttpsError('failed-precondition','انتظر انتهاء التصويت ومهلة وصول الأصوات');
  // Close review atomically, preventing additional votes.
  const close=await ref.child('status').transaction(v=>v==='review'?'closed':undefined);
  if(!close.committed){const latest=(await ref.child('status').get()).val();if(latest!=='closed')throw new HttpsError('failed-precondition','المراجعة غير متاحة')}
