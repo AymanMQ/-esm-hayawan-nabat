@@ -22,3 +22,10 @@
 6. Host starts next round via server-verified action.
 
 Avoid publishing user-provided Firebase admin keys, service account JSON, or credentials.
+
+## Update 2026-10-16: server foundation (not deployed)
+- Added GitHub Actions tests workflow `.github/workflows/tests.yml`.
+- Added `functions/` Node 22 package with callable `submitAnswers` and `finalizeRound` foundation.
+- This server code has NOT been deployed to Firebase or integrated into `multiplayer.html`.
+- **Do not deploy these functions yet**: database rules must be migrated to block client submissions and client phase changes, server review access needs rules, and voting/final score lifecycle still needs implementation and emulator tests.
+- The current public site remains the earlier prototype. No claim of fully working multiplayer or scoring.
