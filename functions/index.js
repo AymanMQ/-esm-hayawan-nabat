@@ -101,7 +101,12 @@ exports.finalizeReview=onCall(options,async request=>{
      (decisions[author]??={})[category]=count===0?validation.status==='accepted':voteDecision(votes,author,ids).accepted;
    }
  }
- const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter,activeCats(s),(word,category,letter)=>classify(word,category,letter).status==='accepted');
+ const approved=(await db.ref('approvedAnswers').get()).val()||{};
+ const categoryValidator=(word,category,letter)=>{
+   if(classify(word,category,letter).status==='accepted')return true;
+   try{return Boolean(approved[keyFor(category,word)]?.normalized===require('./lib/candidate-words').normalize(word));}catch{return false}
+ };
+ const {scores,details}=scoreRound(closed.answers||{},decisions,s.letter,activeCats(s),categoryValidator);
  // Idempotent room totals transaction; cannot award points twice for the same round.
  const roomRef=db.ref('rooms/'+room);
  const tx=await roomRef.transaction(v=>{
