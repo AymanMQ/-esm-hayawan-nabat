@@ -23,7 +23,7 @@ async function vote(author,category,accept){try{await call('voteAnswer',{room,ro
 async function openReview(){try{await call('openReview',{room,round})}catch(e){msg(e)}}
 async function finalize(){try{await call('finalizeReview',{room,round})}catch(e){msg(e)}}
 let latestRoomState=null;function renderScores(state){if(state)latestRoomState=state;const box=$('scoreRows');box.replaceChildren();const totals=latestRoomState?.totals||{};Object.entries(players).sort((a,b)=>(totals[b[0]]||0)-(totals[a[0]]||0)).forEach(([id,p],i)=>{const row=document.createElement('p');row.textContent=(i+1)+'. '+p.name+' — '+(totals[id]||0)+' نقطة';box.append(row)});$('nextRound').classList.toggle('hide',!host||round>=5);$('gameOver').textContent=round>=5?'خلصت المباراة! 🏆':'انتهت الجولة — الجولة التالية عند المضيف'}
-function leave(){stopWatch();room=null;lastRound=0;show('welcome')}
+function leave(){stopWatch();room=null;lastRound=0;submitted=false;show('welcome')}
 $('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;
 setInterval(()=>{if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&submitted&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide')},1000);
 })();
