@@ -37,7 +37,7 @@ exports.challengeAnswer=onCall({maxInstances:20},async request=>{
  if(s.phase!=='review'||!s.players?.[author]||author===uid)throw new HttpsError('failed-precondition','الاعتراض غير متاح');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
  if(!review||review.status!=='review'||Date.now()>=review.closesAt||!review.answers?.[author]?.[category])throw new HttpsError('failed-precondition','انتهت المراجعة أو الإجابة فارغة');
- const tx=await ref.child('challenges/'+author+'/'+category).transaction(v=>v===null?{openedBy:uid,openedAt:Date.now(),votes:{}}:undefined);
+ const tx=await ref.transaction(v=>{if(!v||v.status!=='review'||Date.now()>=v.closesAt||v.challenges?.[author]?.[category])return;v.challenges??={};v.challenges[author]??={};v.challenges[author][category]={openedBy:uid,openedAt:Date.now(),votes:{}};return v;});
  return {ok:true,created:tx.committed};
 });
 exports.voteAnswer=onCall({maxInstances:30},async request=>{
@@ -47,8 +47,8 @@ exports.voteAnswer=onCall({maxInstances:30},async request=>{
  if(s.phase!=='review'||!s.players?.[author]||author===uid)throw new HttpsError('failed-precondition','لا يمكنك التصويت');
  const ref=db.ref(reviewPath(room,round)),review=(await ref.get()).val();
  if(!review||review.status!=='review'||Date.now()>=review.closesAt||!review.challenges?.[author]?.[category])throw new HttpsError('failed-precondition','التصويت غير متاح');
- const tx=await ref.child('challenges/'+author+'/'+category+'/votes/'+uid).transaction(v=>v===null?accept:undefined);
- if(!tx.committed)throw new HttpsError('already-exists','سبق أن صوتّت');
+ const tx=await ref.transaction(v=>{if(!v||v.status!=='review'||Date.now()>=v.closesAt||!v.challenges?.[author]?.[category]||Object.prototype.hasOwnProperty.call(v.challenges[author][category].votes||{},uid))return;v.challenges[author][category].votes??={};v.challenges[author][category].votes[uid]=accept;return v;});
+ if(!tx.committed)throw new HttpsError('failed-precondition','انتهى التصويت أو سبق أن صوتّت');
  return {ok:true};
 });
 exports.finalizeReview=onCall({maxInstances:10},async request=>{
