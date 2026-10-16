@@ -5,6 +5,8 @@ const {getDatabase}=require('firebase-admin/database');
 const {initializeApp,getApps}=require('firebase-admin/app');
 const {upcoming,eventId}=require('./lib/tournament-schedule');
 const {planTournament}=require('./lib/tournament-bracket');
+const {randomInt}=require('node:crypto');
+function shufflePlayers(ids){const out=ids.slice();for(let i=out.length-1;i>0;i--){const j=randomInt(i+1);[out[i],out[j]]=[out[j],out[i]]}return out}
 if(!getApps().length)initializeApp();
 const db=getDatabase(),options={region:'asia-southeast1',maxInstances:10};
 const requireUser=r=>{if(!r.auth?.uid)throw new HttpsError('unauthenticated','الدخول مطلوب');return r.auth.uid};
@@ -41,9 +43,9 @@ exports.lockTournamentRegistration=onCall(options,async request=>{
  if(now<args.closesAt)throw new HttpsError('failed-precondition','لم يُغلق التسجيل بعد');
  const ref=db.ref('tournaments/'+args.id);
  const tx=await ref.transaction(t=>{
-   if(!t||t.status!=='registration'||!t.players?.[uid])return;
-   // Registered players are sorted deterministically; shuffle/seeding must be added before ranked launch.
-   const participants=Object.keys(t.players).sort();
+   if(!t||t.status!=='registration'||!t.players?.[uid]||Date.now()<t.closesAt)return;
+   // Server-generated unpredictable seeding; never trust an ordering from the client.
+   const participants=shufflePlayers(Object.keys(t.players));
    const plan=planTournament(participants,args.groupSize);
    return {...t,status:plan.status==='ready'?'bracket_prepared':'insufficient',bracket:plan,lockedAt:now};
  });
