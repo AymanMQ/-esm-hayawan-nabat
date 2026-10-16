@@ -29,3 +29,11 @@ Avoid publishing user-provided Firebase admin keys, service account JSON, or cre
 - This server code has NOT been deployed to Firebase or integrated into `multiplayer.html`.
 - **Do not deploy these functions yet**: database rules must be migrated to block client submissions and client phase changes, server review access needs rules, and voting/final score lifecycle still needs implementation and emulator tests.
 - The current public site remains the earlier prototype. No claim of fully working multiplayer or scoring.
+
+## Update: review and scoring server functions (not deployed)
+- `functions/index.js` now defines `challengeAnswer`, `voteAnswer`, and `finalizeReview`.
+- A player cannot challenge or vote on their own answer. Votes are written once via a transaction, and review status is checked atomically against closure.
+- Ties accept the challenged answer. Scores are computed from the server review snapshot: 10 unique / 5 duplicate / 0 rejected or blank.
+- Room totals are guarded by `lastScoredRound` in an RTDB transaction to prevent double awards.
+- **Deployment is blocked** until rules are redesigned for callable-only submissions and phase changes, callable endpoints are integrated into the web UI, and emulator tests verify permission boundaries and concurrent finalization.
+- **Do not assume GitHub Pages serves multiplayer end-to-end.** This commit is backend source only.
