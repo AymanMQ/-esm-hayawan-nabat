@@ -1,0 +1,5 @@
+const test=require('node:test'),assert=require('node:assert/strict');const {bracketView}=require('../game/tournament-views');
+const event={status:'bracket_prepared',groupSize:3,players:{uidA:{name:'مريم'},uidB:{name:'عمر'},uidC:{name:'هند'},uidD:{name:'سارة'}},bracket:{capacity:3,rounds:[{players:3,matches:1}],openingMatches:[{matchNumber:1,players:['uidA','uidB','uidC']}],waitlist:['uidD']}};
+test('outsiders see no participant identities',()=>{const view=bracketView(event,'outsider');assert.equal(view.registered,false);assert.equal(JSON.stringify(view).includes('مريم'),false)});
+test('participants see their own match by display name only',()=>{const view=bracketView(event,'uidB');assert.equal(view.registered,true);assert.deepEqual(view.match.players.map(x=>x.name),['مريم','عمر','هند']);assert.equal(JSON.stringify(view).includes('uidA'),false)});
+test('waitlisted user sees waitlist status, not opponent identities',()=>{const view=bracketView(event,'uidD');assert.equal(view.waitlisted,true);assert.equal(view.match,null)});
