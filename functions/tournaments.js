@@ -42,11 +42,17 @@ exports.lockTournamentRegistration=onCall(options,async request=>{
  const uid=requireUser(request),now=Date.now(),args=eventArgs(request.data,now);
  if(now<args.closesAt)throw new HttpsError('failed-precondition','لم يُغلق التسجيل بعد');
  const ref=db.ref('tournaments/'+args.id);
+ const snapshot=(await ref.get()).val();
+ if(!snapshot||snapshot.status!=='registration'||!snapshot.players?.[uid])throw new HttpsError('failed-precondition','لا يمكن تجهيز البطولة');
+ // Generate draw exactly once outside the RTDB transaction retry function.
+ const originalIds=Object.keys(snapshot.players).sort();
+ const participants=shufflePlayers(originalIds);
+ const plan=planTournament(participants,args.groupSize);
  const tx=await ref.transaction(t=>{
    if(!t||t.status!=='registration'||!t.players?.[uid]||Date.now()<t.closesAt)return;
-   // Server-generated unpredictable seeding; never trust an ordering from the client.
-   const participants=shufflePlayers(Object.keys(t.players));
-   const plan=planTournament(participants,args.groupSize);
+   // Refuse a stale draw if new registrations appeared.
+   const latestIds=Object.keys(t.players).sort();
+   if(latestIds.length!==originalIds.length||latestIds.some((id,i)=>id!==originalIds[i]))return;
    return {...t,status:plan.status==='ready'?'bracket_prepared':'insufficient',bracket:plan,lockedAt:now};
  });
  if(!tx.committed)throw new HttpsError('failed-precondition','لا يمكن تجهيز البطولة');
