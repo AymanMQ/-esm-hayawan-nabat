@@ -70,6 +70,12 @@
         ".read": false,
         ".write": false
       }
+    },
+    "approvedAnswers": {
+      "$candidate": {
+        ".read": false,
+        ".write": false
+      }
     }
   }
 }
