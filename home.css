@@ -70,3 +70,28 @@ body{background:repeating-linear-gradient(105deg,#8c7056 0 21px,#84694f 22px 44p
 #intro .scene-pencil::after{content:"";position:absolute;right:-21px;top:4px;border-top:2px solid transparent;border-bottom:2px solid transparent;border-left:7px solid #403a35}
 #intro .scene-stamp{position:absolute;left:7%;bottom:10px;width:61px;height:61px;display:grid;place-items:center;text-align:center;line-height:1.1;border:3px double #9d4943;border-radius:50%;color:#a84c43;background:#f8e5cddd;z-index:4;transform:rotate(14deg);font:700 13px "Tajawal",Tahoma,sans-serif;padding:9px}
 @media(max-width:480px){#intro .tabletop-scene{height:123px;margin-bottom:16px}#intro .tabletop-scene::before{height:85px;top:15px}#intro .scene-note{font-size:12px;top:37px}#intro .scene-letter{width:36px;height:44px;font-size:28px}#intro .scene-pencil{width:85px}#intro .scene-stamp{width:51px;height:51px;font-size:11px}}
+
+/* Product navigation hierarchy: classic game first, culture and ranking second. */
+#intro .game-first{padding:16px 15px 19px;margin:13px 0 23px;background:#f9edcf;border:3px solid #aa7951;border-radius:11px;box-shadow:5px 7px 0 #71503945}
+#intro .game-first-header{text-align:center}
+#intro .game-first-header h2{font:700 30px "Tajawal",Tahoma,sans-serif!important;color:#24527b!important;margin:5px 0!important}
+#intro .game-first-header p{margin:4px 0 11px;font-size:15px;color:#574b40}
+#intro .game-first-tag{display:inline-block;background:#a94d45;color:white;font:700 13px "Tajawal",Tahoma,sans-serif;padding:5px 15px;transform:rotate(-2deg);border-radius:3px}
+#intro .game-first .tabletop-scene{height:115px;margin:8px 0 12px}
+#intro .game-first .home-cta{margin:12px 0 16px}
+#intro .game-first .home-action.solo{background:#f0bf54;border-color:#a26b33;font-size:23px!important}
+#intro .game-first .home-action.group{background:#d5e4d5}
+#intro .game-first .home-mode{padding:10px 12px;margin:0;border:1px dashed #b4a183;background:#fff7e7!important}
+#intro .secondary-games{padding:15px;margin:12px 0 20px;background:#f4ead5;border:1px solid #a8957a;border-radius:7px}
+#intro .secondary-games h2{font-size:22px!important;margin:0;color:#755039!important}
+#intro .secondary-games>.muted{margin:0}
+#intro .secondary-games .extra-play{margin:0;padding:7px 0 0;border:0}
+#intro .secondary-games .extra-play>a{font-size:18px;padding:12px 14px;background:#f1e2c5}
+#intro .secondary-games .extra-play small{display:block;font:400 13px "Tajawal",Tahoma,sans-serif;color:#70685b}
+#intro .ranking-section{margin:15px 0}
+#intro .ranking-section .home-leaderboard{transform:none;border-width:2px;box-shadow:none;background:#f1e5cc!important}
+#intro .ranking-section .home-leaderboard h2{font-size:21px!important}
+#intro .ranking-section .ranking-empty{padding:8px;font-size:14px}
+#intro .home-welcome{padding:10px}
+#intro .home-welcome strong{font-size:18px}
+@media(max-width:450px){#intro .game-first{padding:12px 9px}#intro .game-first-header h2{font-size:27px!important}#intro .game-first .home-action.solo{font-size:20px!important}#intro .game-first .tabletop-scene{height:105px}}
