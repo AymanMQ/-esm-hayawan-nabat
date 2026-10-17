@@ -28,6 +28,7 @@ jobs:
       - run: node --check game/ranking-periods.js
       - run: node --check game/language-questions.js
       - run: node --check functions/literary.js
+      - run: node --check functions/rooms.js
       - run: node --check functions/index.js
       - run: node --check functions/tournaments.js
       - run: node --check game/tournament-schedule.js
