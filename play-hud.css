@@ -32,3 +32,17 @@
  #play .letter{font-size:65px!important}
 }
 @media(max-width:360px){#play .hud-top{font-size:12px}#play .hud-timer{font-size:17px;padding:4px 6px}}
+
+/* Compact side-by-side status, keeping both players visible when typing. */
+#play .hud-my-progress{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:5px 0 3px;font-size:13px;color:#294c77}
+#play .hud-my-progress strong{font-size:15px;color:#214e83}
+#play #hudMyProgress{accent-color:#3d6b9b;height:8px}
+#play .play-hud:focus-within{z-index:60}
+#play #fields input{scroll-margin-top:170px}
+@media(max-width:480px){
+ #play .play-hud{max-height:39vh;overflow:hidden}
+ #play .hud-bottom{margin-top:5px}
+ #play .hud-my-progress{margin-top:4px}
+ #play .play-hud progress{height:7px}
+ #play #fields input{scroll-margin-top:165px}
+}
