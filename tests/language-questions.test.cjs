@@ -8,3 +8,6 @@ test('no duplicated question ids',()=>assert.equal(new Set(q.questions.map(x=>x.
 test('literary tracks include playable material',()=>{for(const track of ['proverbs','poetry','riddles'])assert.ok(q.select(track,3).length>=3)});
 test('mixed session includes poetry, proverbs and riddles',()=>{const tracks=new Set(q.select('mixed',3).map(x=>x.track));for(const t of ['proverbs','poetry','riddles'])assert.ok(tracks.has(t))});
 test('literary items label their provenance',()=>assert.ok(q.questions.filter(x=>['proverbs','poetry','riddles'].includes(x.track)).every(x=>x.sourceTitle)));
+
+test('Diwaniya has five playable prompts for beginners',()=>assert.equal(q.select('diwaniya',1).length,5));
+test('Diwaniya advanced prompts carry attribution or original label',()=>assert.ok(q.select('diwaniya',3,20).every(x=>x.sourceTitle)));
