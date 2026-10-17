@@ -15,3 +15,6 @@ test('Diwaniya advanced prompts carry attribution or original label',()=>assert.
 test('Diwaniya has five beginner questions',()=>assert.equal(q.select('diwaniya',1).length,5));
 test('Diwaniya entries have clear provenance',()=>assert.ok(q.questions.filter(x=>x.track==='diwaniya').every(x=>x.sourceTitle)));
 test('all answer choices are unique',()=>assert.ok(q.questions.every(x=>new Set(x.choices).size===4)));
+
+test('Diwaniya has twenty diverse prompts',()=>{const items=q.questions.filter(x=>x.track==='diwaniya');assert.ok(items.length>=20);for(const kind of ['من القائل؟','أكمل البيت','لغز شعري','حرف الروي'])assert.ok(items.some(x=>x.kind===kind))});
+test('poetry questions have attribution, original riddles marked original',()=>{const items=q.questions.filter(x=>x.track==='diwaniya');assert.ok(items.every(x=>x.sourceTitle));assert.ok(items.filter(x=>x.kind==='لغز شعري').every(x=>x.sourceTitle.includes('أصلي')))});
