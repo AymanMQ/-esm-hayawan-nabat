@@ -55,3 +55,21 @@ test('Enter moves to next field without submitting round',()=>{
  assert.equal(f.get('hudCurrentField').textContent,'تكتب الآن: حيوان ✏️');
  assert.equal(f.get('play').classList.contains('hidden'),false);
 });
+
+test('answers entered after the deadline are never scored',()=>{
+ const f=fixture();f.click('start');f.advance(130000);
+ f.get('f0').value='محمد';f.get('f0').listeners.input();
+ assert.equal(f.get('f0').value,'');
+ assert.equal(f.get('results').classList.contains('hidden'),false);
+ assert.match(f.get('score').textContent,/أنت 0/);
+ f.drain();
+});
+test('bank does not award a country as an animal',()=>{
+ assert.notEqual(bank.classify('كويت','حيوان','ك').status,'accepted');
+ assert.equal(bank.classify('كويت','بلاد','ك').status,'accepted');
+});
+test('all five input fields have keyboard hints',()=>{
+ const f=fixture();f.click('start');
+ for(let i=0;i<4;i++)assert.equal(f.get('f'+i).enterKeyHint,'next');
+ assert.equal(f.get('f4').enterKeyHint,'done');
+});
