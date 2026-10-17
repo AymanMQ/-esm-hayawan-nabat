@@ -16,6 +16,7 @@ jobs:
       - run: node --test tests/*.test.cjs
       - run: node --check game/letters-engine.js
       - run: node --check game/discovery.js
+      - run: node --check game/solo-rules.js
       - run: node --check game/tournament-bracket.js
       - run: node --check game/tournament-progression.js
       - run: node --check game/candidate-words.js
