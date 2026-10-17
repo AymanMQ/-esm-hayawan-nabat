@@ -1,6 +1,8 @@
 /* In-game sticky HUD: always visible while scrolling through the five inputs.
    Stays in document flow, so Safari's keyboard doesn't cover a fixed overlay. */
 #play{overflow:visible!important}
+/* The vintage notebook previously clipped overflow and disabled sticky positioning. */
+.page:has(#play:not(.hidden)){overflow:visible!important}
 #play .play-hud{
   position:sticky;top:0;z-index:50;isolation:isolate;
   background:#f7e9c8f5;border:2px solid #8f7659;border-radius:0 0 13px 13px;
