@@ -1,0 +1,32 @@
+/* In-game sticky HUD: always visible while scrolling through the five inputs.
+   Stays in document flow, so Safari's keyboard doesn't cover a fixed overlay. */
+#play{overflow:visible!important}
+#play .play-hud{
+  position:sticky;top:0;z-index:50;isolation:isolate;
+  background:#f7e9c8f5;border:2px solid #8f7659;border-radius:0 0 13px 13px;
+  padding:9px 12px 10px;margin:0 0 13px;
+  box-shadow:0 5px 12px #48392344;
+  font-family:"Tajawal",Tahoma,Arial,sans-serif;
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)
+}
+#play .hud-top{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:15px;font-weight:700}
+#play .hud-round,#play .hud-letter{white-space:nowrap;color:#604c3a}
+#play .hud-letter strong{font-size:22px;color:#a24d43}
+#play .hud-timer{white-space:nowrap;background:#315e78;color:#fff;border-radius:7px;padding:6px 10px;font:700 21px "Tajawal",Tahoma,sans-serif;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+#play .hud-timer.hurry{background:#a5483e}
+#play .hud-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 4px;font-size:14px;color:#365a48}
+#play .hud-bottom strong{font-size:16px;white-space:nowrap;color:#244f40}
+#play .play-hud progress{display:block;width:100%;height:11px;accent-color:#477a62}
+#play .play-hud #finishWarning{font-size:13px;font-weight:700;color:#9c342c;margin:5px 0 0;text-align:center;line-height:1.5}
+#play .hud-explainer{font-size:12px;margin:6px 0 10px}
+#play .letter{margin:6px 0 0!important;font-size:76px!important;line-height:1.25}
+#play #liveScore{margin:2px 0;font-size:16px;font-weight:700}
+@media(max-width:480px){
+ #play .play-hud{padding:8px 9px 9px;top:0;margin:0 -3px 12px}
+ #play .hud-top{font-size:13px;gap:5px}
+ #play .hud-letter strong{font-size:19px}
+ #play .hud-timer{font-size:19px;padding:5px 8px}
+ #play .hud-bottom{font-size:13px}
+ #play .letter{font-size:65px!important}
+}
+@media(max-width:360px){#play .hud-top{font-size:12px}#play .hud-timer{font-size:17px;padding:4px 6px}}
