@@ -33,3 +33,25 @@ body{background:repeating-linear-gradient(105deg,#8c7056 0 21px,#84694f 22px 44p
 #intro .home-progress{font-size:14px;color:#315c50;text-align:center;margin:14px 0}
 @media(max-width:380px){#intro .home-action{font-size:17px;min-height:76px;padding:8px}}
 @media(prefers-reduced-motion:reduce){#intro .home-action{transition:none}}
+
+/* Playful memory-box treatment: folded notebook, ticket-style actions, stickers. */
+.page:has(#intro:not(.hidden)){max-width:660px!important;transform:rotate(-.3deg);border:10px solid #dfc9a2!important;border-left:16px solid #b96557!important;border-radius:5px 17px 7px 12px!important;box-shadow:0 0 0 5px #5c4430,14px 20px 0 #422c1b44,0 22px 50px #20150c88!important}
+.page:has(#intro:not(.hidden))::before{border:2px dashed #9b7d5e!important;inset:8px!important}
+.page:has(#intro:not(.hidden))::after{content:"✦  ورق • حبر • حماس  ✦";font-size:12px;letter-spacing:1px}
+.page:has(#intro:not(.hidden)) .notebook-heading{transform:rotate(.7deg);background:#f9edcf!important;border-radius:4px 15px 4px 13px;box-shadow:3px 5px 0 #95734b55}
+.page:has(#intro:not(.hidden)) h1{font-size:clamp(32px,8vw,52px)!important;letter-spacing:0}
+#intro .home-welcome{background:#fff4d9;border:2px dashed #b98a6d;border-radius:8px;padding:12px 9px;position:relative;transform:rotate(-.5deg)}
+#intro .home-welcome::before{content:"ذكريات زمان";position:absolute;top:-13px;left:14px;background:#b3544d;color:#fff;font:700 12px Tahoma;padding:5px 9px;transform:rotate(-7deg);border-radius:3px}
+#intro .home-leaderboard{position:relative;background:#f9ebc6!important;border:3px solid #9a7651!important;transform:rotate(.35deg);padding-top:22px}
+#intro .home-leaderboard::before{content:"★ ★ ★";position:absolute;top:7px;left:12px;color:#b85a43;font-size:12px}
+#intro .home-leaderboard h2{font-size:25px!important}
+#intro .home-action{position:relative;border:3px solid #4b5e68;border-radius:7px 17px 7px 17px;box-shadow:4px 6px 0 #59473577;transform:rotate(-1deg)}
+#intro .home-action.group{transform:rotate(1deg);border-color:#416858}
+#intro .home-action:hover{filter:brightness(1.035);transform:translateY(-2px) rotate(0deg)}
+#intro .home-action.solo::after{content:"ابدأ التحدي";position:absolute;bottom:-11px;right:8px;background:#ad534b;color:white;font:700 10px Tahoma;padding:3px 7px;transform:rotate(-6deg)}
+#intro .home-action.group::after{content:"لمة الأصحاب";position:absolute;bottom:-11px;left:7px;background:#3c725f;color:white;font:700 10px Tahoma;padding:3px 7px;transform:rotate(6deg)}
+#intro .home-mode{border:2px dotted #b39b7b;background:#f7edda!important;border-radius:12px 4px 12px 4px}
+#intro .extra-play>a{border:2px solid #9c8a70;border-radius:5px;box-shadow:3px 4px 0 #90785855;transform:rotate(-.4deg)}
+#intro .extra-play>a:nth-of-type(2){transform:rotate(.5deg)}
+@media(max-width:480px){.page:has(#intro:not(.hidden)){transform:none;border-width:6px 6px 6px 10px!important;box-shadow:0 8px 30px #20150c77!important}.page:has(#intro:not(.hidden)) h1{font-size:35px!important}#intro .home-cta{gap:10px}#intro .home-action{font-size:17px!important;min-height:83px}}
+@media(prefers-reduced-motion:reduce){#intro .home-action:hover{transform:none}}
