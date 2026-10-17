@@ -13,11 +13,10 @@ html[dir="rtl"] .page h2{font-weight:700!important;line-height:1.7!important}
 html[dir="rtl"] .notebook-meta{font-size:16px!important;line-height:1.7!important;letter-spacing:0!important}
 html[dir="rtl"] .notebook-subject{font-size:19px!important;line-height:1.8!important}
 html[dir="rtl"] .page #fields label,
-html[dir="rtl"] .page #fields input,
 html[dir="rtl"] .page .letter,
 html[dir="rtl"] .page .answer,
 html[dir="rtl"] .page .answer strong{font-family:var(--font-ink)!important}
-html[dir="rtl"] .page #fields input{font-family:'Reem Kufi Fun','Marhey',sans-serif!important;font-size:22px!important;line-height:1.55!important;min-height:52px!important;color:#264e86!important}
+html[dir="rtl"] .page #fields input{font-family:'Tajawal',Tahoma,Arial,sans-serif!important;font-size:28px!important;font-weight:500!important;line-height:1.5!important;min-height:62px!important;height:62px!important;color:#174b88!important;-webkit-text-fill-color:#174b88!important;text-shadow:none!important}
 html[dir="rtl"] .page #fields input::placeholder{font-family:var(--font-read)!important;font-size:15px;opacity:.65}
 html[dir="rtl"] .page #fields label{font-size:19px!important;font-weight:700!important}
 html[dir="rtl"] .page .letter{font-weight:700!important;line-height:1.4!important}
@@ -34,7 +33,7 @@ html[dir="rtl"] .page select{font-size:17px!important}
 @media(max-width:450px){
  html[dir="rtl"] .notebook-meta{font-size:13px!important}
  html[dir="rtl"] .page h1{font-size:38px!important}
- html[dir="rtl"] .page #fields input{font-size:22px!important}
+ html[dir="rtl"] .page #fields input{font-size:27px!important}
 }
 
 html[dir="rtl"] .page #fields label{font-family:'Marhey',sans-serif!important;font-weight:500!important}
