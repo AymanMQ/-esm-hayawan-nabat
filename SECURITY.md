@@ -31,3 +31,7 @@ This review is of repository code, **not a completed production penetration test
 5. Test create/join/watch and reject non-member reads in Emulator and staging.
 6. Enable App Check enforcement only after client compatibility is confirmed.
 7. Do not expose weekly/monthly leaderboards until scoring is server-authoritative and anti-abuse checks are in place.
+
+## Security automation added
+- `.github/workflows/codeql.yml`: CodeQL analysis on push, pull request and weekly schedule; results require a successful GitHub Actions run and supported repository security settings.
+- `tests/security-rules.test.cjs` and `tests/room-security.test.cjs`: static rules and mocked callable tests; **not a substitute for RTDB Emulator authorization tests**.
