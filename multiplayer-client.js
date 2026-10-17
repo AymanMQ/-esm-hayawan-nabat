@@ -1,6 +1,6 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id),categoryRules=window.GameCategories;let cats=[...categoryRules.DEFAULT];let db,fn,uid,room,roomRef,roomListener,reviewRef,reviewListener,offset=0,round=0,deadline=0,ticker=null,submitted=false,players={},host=false,currentPhase='',lastRound=0,reviewData=null,latestCategories=[...cats];
-const show=id=>['welcome','lobby','game','done','review','scores'].forEach(x=>$(x)?.classList.toggle('hide',x!==id));
+const $=id=>document.getElementById(id),categoryRules=window.GameCategories;let cats=[...categoryRules.DEFAULT];let db,fn,uid,room,roomRef,roomListener,reviewRef,reviewListener,offset=0,round=0,deadline=0,ticker=null,submitted=false,players={},host=false,currentPhase='',lastRound=0,reviewData=null,latestCategories=[...cats],literaryState=null,lastLiteraryRound=0,dismissedLiteraryRound=0,literarySubmittedRound=0;
+const show=id=>['welcome','lobby','game','done','review','scores','literary'].forEach(x=>$(x)?.classList.toggle('hide',x!==id));
 function msg(e){$('error').textContent=typeof e==='string'?e:(e.message||String(e));$('error').classList.remove('hide')}
 function clear(){ $('error').classList.add('hide')}
 function config(){let c=window.FADAWAH_FIREBASE_CONFIG;if(!c?.apiKey||!c?.databaseURL||!c?.projectId)throw Error('لم تتم إضافة إعدادات Firebase للويب بعد');return c}
@@ -11,7 +11,35 @@ function code(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from
 async function create(){clear();try{const n=name();await init();let created;for(let i=0;i<12;i++){const k=code(),r=db.ref('rooms/'+k);const tx=await r.transaction(v=>v===null?{host:uid,phase:'waiting',round:0,players:{[uid]:{name:n,joinedAt:firebase.database.ServerValue.TIMESTAMP}}}:undefined,undefined,false);if(tx.committed){created=k;break}}if(!created)throw Error('تعذر إنشاء الروم');watch(created)}catch(e){msg(e)}}
 async function join(){clear();try{const n=name();await init();const k=$('codeInput').value.trim().toUpperCase();if(!/^[A-Z2-9]{6}$/.test(k))throw Error('أدخل كودًا من ٦ رموز');const r=db.ref('rooms/'+k),s=(await r.once('value')).val();if(!s)throw Error('الروم غير موجود');if(s.phase!=='waiting'&&!s.players?.[uid])throw Error('اللعبة بدأت، انتظر الجولة القادمة');await r.child('players/'+uid).set({name:n,joinedAt:firebase.database.ServerValue.TIMESTAMP});watch(k)}catch(e){msg(e)}}
 function stopWatch(){if(roomRef&&roomListener)roomRef.off('value',roomListener);if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);roomRef=reviewRef=null;roomListener=reviewListener=null;clearInterval(ticker)}
-function watch(k){stopWatch();room=k;show('lobby');roomRef=db.ref('rooms/'+k);roomListener=roomRef.on('value',s=>{const v=s.val();if(!v){msg('أُغلق الروم');show('welcome');return}players=v.players||{};host=v.host===uid;round=v.round||0;currentPhase=v.phase;latestCategories=v.categories||categoryRules.DEFAULT;cats=v.roundCategories||latestCategories;renderCategorySetup(v);$('roomCode').textContent=k;$('players').replaceChildren();Object.entries(players).forEach(([id,p])=>{const tag=document.createElement('span');tag.className='person';tag.textContent=(id===v.host?'👑 ':'')+p.name;$('players').append(tag)});$('start').classList.toggle('hide',!host||!['waiting','results'].includes(v.phase)||round>=5);$('status').textContent=v.phase==='waiting'?'ننتظر المضيف يبدأ الجولة…':v.phase==='playing'?'الجولة جارية':v.phase==='review'?'وقت مراجعة الإجابات':'انتهت الجولة';if(v.phase==='playing'){if(lastRound!==round){if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);reviewRef=null;reviewListener=null;reviewData=null;lastRound=round;begin(v)}else if(!submitted)show('game')}else if(v.phase==='review'){listenReview();show('review')}else if(v.phase==='results'){listenReview();show('scores');renderScores(v)}else show('lobby')});}
+function watch(k){stopWatch();room=k;show('lobby');roomRef=db.ref('rooms/'+k);roomListener=roomRef.on('value',s=>{const v=s.val();if(!v){msg('أُغلق الروم');show('welcome');return}players=v.players||{};host=v.host===uid;round=v.round||0;currentPhase=v.phase;literaryState=v.literary||null;latestCategories=v.categories||categoryRules.DEFAULT;cats=v.roundCategories||latestCategories;renderCategorySetup(v);$('roomCode').textContent=k;$('players').replaceChildren();Object.entries(players).forEach(([id,p])=>{const tag=document.createElement('span');tag.className='person';tag.textContent=(id===v.host?'👑 ':'')+p.name;$('players').append(tag)});$('start').classList.toggle('hide',!host||!['waiting','results'].includes(v.phase)||round>=5);$('startLiterary').classList.toggle('hide',!host||!['waiting','results'].includes(v.phase)||v.literary?.status==='asking');$('status').textContent=v.phase==='waiting'?'ننتظر المضيف يبدأ الجولة…':v.phase==='playing'?'الجولة جارية':v.phase==='review'?'وقت مراجعة الإجابات':'انتهت الجولة';if(v.literary?.round&&v.literary.round>lastLiteraryRound){lastLiteraryRound=v.literary.round;dismissedLiteraryRound=0;literarySubmittedRound=0}if(v.literary?.status==='asking'||v.literary?.status==='revealed'&&dismissedLiteraryRound!==v.literary.round){renderLiterary(v);show('literary');return}if(v.phase==='playing'){if(lastRound!==round){if(reviewRef&&reviewListener)reviewRef.off('value',reviewListener);reviewRef=null;reviewListener=null;reviewData=null;lastRound=round;begin(v)}else if(!submitted)show('game')}else if(v.phase==='review'){listenReview();show('review')}else if(v.phase==='results'){listenReview();show('scores');renderScores(v)}else show('lobby')});}
+function renderLiterary(state){
+ const q=state.literary;if(!q)return;
+ const asking=q.status==='asking',remaining=Math.max(0,Math.ceil((q.endAt-Date.now()-offset)/1000));
+ $('literaryProgress').textContent='الفقرة '+q.round+' — '+q.kind;
+ $('literaryQuestion').textContent=q.question;
+ $('literaryClock').textContent=asking?'الوقت المتبقي: '+remaining+' ثانية':'اكتملت الفقرة';
+ $('literaryChoices').replaceChildren();
+ for(const [index,choice] of (q.choices||[]).entries()){
+   const button=document.createElement('button');button.type='button';button.className='literary-choice';button.textContent=choice;
+   if(!asking&&index===q.correctIndex)button.classList.add('selected');
+   button.disabled=!asking||literarySubmittedRound===q.round||remaining===0;
+   button.onclick=async()=>{button.disabled=true;try{await call('answerLiteraryRound',{room,round:q.round,choice:index});literarySubmittedRound=q.round;$('literaryStatus').textContent='وصلت إجابتك ✓';renderLiterary({literary:q,players:state.players,literaryScores:state.literaryScores})}catch(e){msg(e);button.disabled=false}};
+   $('literaryChoices').append(button);
+ }
+ $('literaryStatus').textContent=asking?(literarySubmittedRound===q.round?'وصلت إجابتك ✓':'اختر إجابة واحدة، لن تُكشف حتى نهاية الوقت.'):'انتهى الوقت وكُشفت الإجابة.';
+ $('revealLiterary').classList.toggle('hide',!asking||!host);
+ $('revealLiterary').disabled=remaining>0;
+ $('literaryExplanation').textContent=asking?'':'💡 '+(q.explanation||'')+' — '+(q.sourceTitle||'');
+ $('literaryScores').replaceChildren();
+ if(!asking)for(const [id,player] of Object.entries(state.players||{})){
+   const p=document.createElement('p');p.textContent=player.name+': '+(state.literaryScores?.[id]||0)+' نقطة';$('literaryScores').append(p);
+ }
+ $('literaryBack').classList.toggle('hide',asking);
+}
+async function startLiterary(){try{$('startLiterary').disabled=true;await call('startLiteraryRound',{room})}catch(e){msg(e)}finally{$('startLiterary').disabled=false}}
+async function revealLiterary(){try{$('revealLiterary').disabled=true;await call('revealLiteraryRound',{room})}catch(e){msg(e)}finally{$('revealLiterary').disabled=false}}
+function backFromLiterary(){if(literaryState?.status!=='revealed')return;dismissedLiteraryRound=literaryState.round;show('lobby')}
+
 function renderCategorySetup(state){
  const editable=host&&['waiting','results'].includes(state.phase)&&state.round<5;
  const allowed=['waiting','results'].includes(state.phase)&&state.round<5;
@@ -66,7 +94,7 @@ async function vote(author,category,accept){try{await call('voteAnswer',{room,ro
 async function openReview(){try{await call('openReview',{room,round})}catch(e){msg(e)}}
 async function finalize(){try{await call('finalizeReview',{room,round})}catch(e){msg(e)}}
 let latestRoomState=null;function renderScores(state){if(state)latestRoomState=state;const box=$('scoreRows');box.replaceChildren();const totals=latestRoomState?.totals||{};Object.entries(players).sort((a,b)=>(totals[b[0]]||0)-(totals[a[0]]||0)).forEach(([id,p],i)=>{const row=document.createElement('p');row.textContent=(i+1)+'. '+p.name+' — '+(totals[id]||0)+' نقطة';box.append(row)});$('nextRound').classList.toggle('hide',!host||round>=5);$('gameOver').textContent=round>=5?'خلصت المباراة! 🏆':'انتهت الجولة — الجولة التالية عند المضيف'}
-function leave(){stopWatch();room=null;lastRound=0;submitted=false;show('welcome')}
-$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;$('sendProposal').onclick=proposeCategory;$('resetCategories').onclick=()=>setCategories(categoryRules.DEFAULT);
-setInterval(()=>{if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&submitted&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide')},1000);
+function leave(){stopWatch();room=null;lastRound=0;lastLiteraryRound=0;dismissedLiteraryRound=0;submitted=false;show('welcome')}
+$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;$('startLiterary').onclick=startLiterary;$('revealLiterary').onclick=revealLiterary;$('literaryBack').onclick=backFromLiterary;$('sendProposal').onclick=proposeCategory;$('resetCategories').onclick=()=>setCategories(categoryRules.DEFAULT);
+setInterval(()=>{if(literaryState?.status==='asking'&&room)renderLiterary({literary:literaryState,players,literaryScores:{}});if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&submitted&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide')},1000);
 })();
