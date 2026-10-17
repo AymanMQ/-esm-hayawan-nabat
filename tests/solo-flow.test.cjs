@@ -10,7 +10,7 @@ function fixture(){
  return el};
  for(const id of ids){const el=create();el.id=id;elements.set(id,el)}
  elements.get('difficulty').value='1';elements.get('timer').parentElement=create();
- const document={activeElement:null,getElementById:id=>elements.get(id)||null,createElement:create};
+ const document={activeElement:null,visibilityState:'visible',listeners:{},addEventListener(name,fn){this.listeners[name]=fn},getElementById:id=>elements.get(id)||null,createElement:create};
  const local=new Map();
  const localStorage={getItem:k=>local.has(k)?local.get(k):null,setItem:(k,v)=>local.set(k,String(v))};
  const clock={now:()=>now};
@@ -19,7 +19,7 @@ function fixture(){
  const click=id=>{const el=elements.get(id);assert.ok(el?.listeners.click,'missing click '+id);el.listeners.click()};
  const drain=()=>{for(let i=0;i<50&&timeouts.size;i++){const tasks=[...timeouts.entries()];timeouts.clear();for(const [,fn] of tasks)fn()}assert.equal(timeouts.size,0)};
  const tick=()=>{for(const fn of [...intervals.values()])fn()};
- return {elements,click,drain,tick,advance(ms){now+=ms},get:id=>elements.get(id),timeouts,intervals};
+ return {elements,click,drain,tick,advance(ms){now+=ms},get:id=>elements.get(id),document,timeouts,intervals};
 }
 test('five rounds progress to winner with no lost answers',()=>{
  const f=fixture();f.click('start');
@@ -72,4 +72,12 @@ test('all five input fields have keyboard hints',()=>{
  const f=fixture();f.click('start');
  for(let i=0;i<4;i++)assert.equal(f.get('f'+i).enterKeyHint,'next');
  assert.equal(f.get('f4').enterKeyHint,'done');
+});
+
+test('returning from background immediately reconciles an expired timer',()=>{
+ const f=fixture();f.click('start');f.document.visibilityState='hidden';f.advance(130000);
+ f.document.visibilityState='visible';f.document.listeners.visibilitychange();
+ assert.equal(f.get('results').classList.contains('hidden'),false);
+ assert.equal(f.intervals.size,0);
+ f.drain();
 });
