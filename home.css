@@ -95,3 +95,24 @@ body{background:repeating-linear-gradient(105deg,#8c7056 0 21px,#84694f 22px 44p
 #intro .home-welcome{padding:10px}
 #intro .home-welcome strong{font-size:18px}
 @media(max-width:450px){#intro .game-first{padding:12px 9px}#intro .game-first-header h2{font-size:27px!important}#intro .game-first .home-action.solo{font-size:20px!important}#intro .game-first .tabletop-scene{height:105px}}
+
+/* Clear hierarchy: the original game leads, cultural modes follow, ranking stays last. */
+#intro .game-first{background:linear-gradient(165deg,#fff3d9f5,#ead9b6eb);padding:16px 13px 17px;border:3px solid #8f6c4c;border-radius:10px;box-shadow:5px 7px 0 #614c3659;position:relative;margin:13px 0 20px}
+#intro .game-first-header{text-align:center;padding:5px 3px 10px}
+#intro .game-first-header h2{font-size:clamp(25px,6vw,34px)!important;margin:5px 0;color:#264b70!important}
+#intro .game-first-header p{font-size:15px;margin:4px 0 7px;color:#594b3a}
+#intro .game-first-tag{display:inline-block;background:#ad534a;color:white;font:700 13px Tahoma,sans-serif;padding:5px 13px;border-radius:3px;transform:rotate(-3deg)}
+#intro .game-first .tabletop-scene{height:115px;margin:0 0 20px}
+#intro .game-first .home-cta{margin:12px 0 20px}
+#intro .game-first .home-action.solo{background:#f2c85d;font-size:23px!important;border-color:#8c572d;box-shadow:3px 5px #8c572d88}
+#intro .game-first .home-mode{margin:12px 0 5px;background:#f9f1dc!important}
+#intro .secondary-games{margin:18px 0;padding:14px 14px 8px;border:1px dashed #ac9374;background:#f7edda91;border-radius:7px}
+#intro .secondary-games h2{font-size:22px!important;margin:2px 0;color:#81533c!important}
+#intro .secondary-games .muted{margin:3px 0;font-size:14px}
+#intro .secondary-games .extra-play{margin:8px 0 0;padding-top:8px}
+#intro .secondary-games .extra-play>a{font-size:18px;padding:12px;margin:8px 0;background:#eee1c6}
+#intro .secondary-games .extra-play>a small{display:block;font:400 13px "Tajawal",Tahoma,sans-serif;color:#62594e}
+#intro .ranking-section{margin-top:23px}
+#intro .ranking-section .home-leaderboard{transform:none}
+#intro .home-progress{margin:18px 0}
+@media(max-width:480px){#intro .game-first{padding:11px 9px 14px}#intro .game-first .tabletop-scene{height:98px}#intro .game-first .home-action.solo{font-size:19px!important}}
