@@ -45,3 +45,8 @@
  #play .play-hud progress{height:7px}
  #play #fields input{scroll-margin-top:165px}
 }
+
+/* The currently focused answer remains named even when its field scrolls below the HUD. */
+#play .hud-current-field{margin:6px 0 0;padding:3px 7px;border-radius:5px;background:#e5d7b6;color:#664b34;font:700 13px "Tajawal",Tahoma,sans-serif;text-align:center}
+#play .play-hud:has(.hud-current-field){scroll-margin-top:0}
+@media(max-width:480px){#play .hud-current-field{font-size:12px;padding:2px 5px;margin-top:4px}}
