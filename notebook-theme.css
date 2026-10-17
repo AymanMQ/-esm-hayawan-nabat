@@ -1,89 +1,44 @@
-/* دفتر المدرسة القديم — ornamental title frame and ruled pages */
-:root{--paper:#e9dec1;--ink:#263e66;--red:#a44d49;--line:rgba(63,113,143,.34)}
-html{background:#8c816e}
-body{margin:0!important;background:#8c816e!important;color:var(--ink)!important;font-family:Tahoma,Arial,sans-serif!important}
-.page{position:relative;isolation:isolate;max-width:630px!important;min-height:100dvh!important;margin:0 auto!important;padding:20px 28px 60px!important;border:0!important;border-radius:2px!important;overflow:hidden!important;box-shadow:0 7px 22px #3e352b6b!important;background:
-radial-gradient(ellipse at 15% 4%,#f9f2dc99,transparent 65%),
-radial-gradient(ellipse at 90% 90%,#9e79551a,transparent 45%),
-repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transparent 34px),
-#eee3c9!important}
-.page::before{content:"";position:absolute;inset:10px 9px 10px 9px;z-index:-1;pointer-events:none;border:3px double #746f67!important;border-radius:19px 5px 19px 5px;box-shadow:inset 0 0 0 4px #f5ebd7,inset 0 0 0 5px #a8a09380}
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+/* Vintage notebook: one unambiguous input font, no older handwriting overrides. */
+:root{--paper:#eee3c9;--ink:#263e66;--red:#a44d49;--rule:rgba(63,113,143,.30);--answer-ink:#154b86}
+html,body{margin:0;background:#8c816e!important;color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+.page{position:relative;isolation:isolate;max-width:630px!important;min-height:100dvh!important;margin:0 auto!important;padding:20px 28px 60px!important;border:0!important;border-radius:2px!important;overflow:hidden!important;box-shadow:0 7px 22px #3e352b6b!important;background:radial-gradient(ellipse at 15% 4%,#f9f2dc99,transparent 65%),radial-gradient(ellipse at 90% 90%,#9e79551a,transparent 45%),repeating-linear-gradient(to bottom,transparent 0 32px,var(--rule) 33px,transparent 34px),var(--paper)!important}
+.page::before{content:"";position:absolute;inset:10px 9px;z-index:-1;pointer-events:none;border:3px double #746f67;border-radius:19px 5px 19px 5px;box-shadow:inset 0 0 0 4px #f5ebd7,inset 0 0 0 5px #a8a09380}
 .page::after{content:"❦     ✤     ❦";position:absolute;bottom:15px;left:0;right:0;text-align:center;color:#8b5d55;font-size:18px;letter-spacing:8px;pointer-events:none}
-.notebook-heading{position:relative;margin:4px 2px 17px!important;padding:9px 8px 17px!important;background:rgba(245,237,216,.4)!important;border:4px double #77716a!important;border-radius:13px 4px 13px 4px!important;box-shadow:inset 0 0 0 3px #e9dec1,inset 0 0 0 4px #8d857e88!important}
-.notebook-heading::before,.notebook-heading::after{content:"❧"!important;position:absolute;top:4px;color:#7b7771;font-size:19px}
+.notebook-heading{position:relative;margin:4px 2px 17px;padding:9px 8px 17px;background:rgba(245,237,216,.4);border:4px double #77716a;border-radius:13px 4px 13px 4px;box-shadow:inset 0 0 0 3px #e9dec1,inset 0 0 0 4px #8d857e88}
+.notebook-heading::before,.notebook-heading::after{content:"❧";position:absolute;top:4px;color:#7b7771;font-size:19px}
 .notebook-heading::before{right:6px}.notebook-heading::after{left:6px;transform:scaleX(-1)}
-.notebook-meta{display:flex!important;justify-content:space-between!important;gap:9px;flex-wrap:wrap;font-size:12px!important;color:#655e56!important;font-weight:bold;border-bottom:1px dotted #898073!important;padding:8px 25px!important}
-.notebook-subject{font-size:15px!important;color:#a14d49!important;font-weight:700;letter-spacing:.2px;margin-top:9px}
-.page h1{font-size:clamp(33px,9vw,49px)!important;line-height:1.4!important;margin:16px 0 7px!important;color:#284b77!important;text-shadow:1px 1px #eee1c9!important}
-.page h2{color:#a44d49!important}
-.page .line,.page .underline{height:2px!important;width:170px!important;background:#a94b4b!important;margin-bottom:17px!important}
+.notebook-meta{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;font-size:12px;color:#655e56;font-weight:bold;border-bottom:1px dotted #898073;padding:8px 25px}
+.notebook-subject{font-size:15px;color:#a14d49;font-weight:700;margin-top:9px;text-align:center}
+.page h1{font-size:clamp(33px,9vw,49px)!important;line-height:1.4;margin:16px 0 7px!important;color:#284b77!important;text-shadow:1px 1px #eee1c9!important;text-align:center}
+.page h2{color:var(--red)!important}
+.page .line,.page .underline{height:2px!important;width:170px!important;background:var(--red)!important;margin:0 auto 17px!important}
 .page header{border-bottom:1px dotted #928e7d;padding-bottom:8px}
-.page .tag{background:transparent!important;border:1px dashed #9d7771;padding:6px!important;color:#a14d49!important;transform:rotate(-2deg)}
+.page .tag{background:transparent!important;border:1px dashed #9d7771;padding:6px;color:var(--red)!important}
 .page .card{background:rgba(246,237,213,.3)!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:12px 5px!important;margin:16px 0!important}
 .page .card+.card{border-top:1px dashed #9c9586!important}
-.page .btn{background:#ead7aa!important;border:1px solid #a28d75!important;border-radius:4px!important;box-shadow:2px 3px #8275632b!important;color:#3c4961!important;font-family:Tahoma,Arial,sans-serif!important}
+.page .btn{background:#ead7aa!important;border:1px solid #a28d75!important;border-radius:4px!important;box-shadow:2px 3px #8275632b!important;color:#3c4961!important;font-family:Tahoma,Arial,sans-serif}
 .page .btn.alt,.page .btn.secondary{background:#dbe0d0!important}
-.page input,.page select{background:transparent!important;border:0!important;border-bottom:1px solid #7997aa!important;border-radius:0!important;color:#1f467d!important;box-shadow:none!important}
-.page input::placeholder{color:#8d8d86}
 .page .letter{font-size:98px!important;color:#b1514b!important;text-shadow:1px 2px #dec5ad!important}
 .page .pill{background:#e9dbb9aa!important;border:1px dashed #aa9275!important;border-radius:3px!important}
 .page .muted{color:#665f58!important}
 .page .answer,.page .person{background:transparent!important;border:0!important;border-bottom:1px solid #88a4af!important;border-radius:0!important;box-shadow:none!important}
 .page .score{color:#39735f!important}
 #fields{margin:8px 0 23px!important}
-#fields label{display:block!important;margin:15px 0 2px!important;font-size:16px!important;color:#9d504b!important}
-#fields input{display:block!important;width:100%!important;height:42px!important;margin:0 0 5px!important;padding:5px 3px!important;border:0!important;border-bottom:1px solid #7b9baa!important;border-radius:0!important;font-size:20px!important;background:transparent!important}
-#fields input:focus{outline:0!important;border-bottom:2px solid #a74e4e!important}
+.page #fields label{display:block;margin:15px 0 2px!important;font:700 19px Tahoma,Arial,sans-serif!important;color:var(--red)!important}
+.page #fields input{display:block;width:100%!important;box-sizing:border-box!important;font-family:"Cairo",Tahoma,Arial,sans-serif!important;font-size:27px!important;font-weight:700!important;line-height:1.5!important;height:65px!important;padding:7px 9px!important;margin:0 0 6px!important;text-align:right!important;color:var(--answer-ink)!important;-webkit-text-fill-color:var(--answer-ink)!important;background:rgba(255,251,237,.67)!important;border:0!important;border-bottom:2px solid #7795a6!important;border-radius:0!important;box-shadow:none!important;letter-spacing:normal!important;text-shadow:none!important}
+.page #fields input::placeholder{font:400 16px Tahoma,Arial,sans-serif!important;color:#777!important;-webkit-text-fill-color:#777!important}
+.page #fields input:focus{outline:2px solid #477b9d!important;outline-offset:1px}
+.page #fields input:disabled{opacity:1!important}
 #answers{display:block!important}
 #answers .answer{margin:6px 0!important;padding:10px 3px!important;overflow-wrap:anywhere}
-#answers .answer strong{display:inline-block!important;min-width:65px!important;margin-left:12px;color:#a44d49!important}
+#answers .answer strong{display:inline-block!important;min-width:65px!important;margin-left:12px;color:var(--red)!important}
+#answers .answer .player-ink{font:700 20px "Cairo",Tahoma,sans-serif!important;color:var(--answer-ink)!important}
+#answers .answer .opponent-ink{font:700 20px "Cairo",Tahoma,sans-serif!important;color:#21573e!important}
+#answers .answer .review-ink{font:700 15px Tahoma,Arial,sans-serif!important;color:#962d32!important;display:block;padding-top:4px}
+#answers .answer .answer-separator{color:#5d5550;margin:0 5px}
+#myCount{font:600 14px Tahoma,Arial,sans-serif!important;color:#315a43!important}
 .page section:not(.hidden):not(.hide){animation:pageIn .23s ease-out both}
 @keyframes pageIn{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:450px){.page{padding:16px 19px 54px!important}.page::before{inset:6px!important}.notebook-meta{font-size:11px!important;padding:7px 19px!important}.page h1{font-size:34px!important}}
+@media(max-width:450px){.page{padding:16px 19px 54px!important}.page::before{inset:6px}.notebook-meta{font-size:11px;padding:7px 19px}.page h1{font-size:34px!important}.page #fields input{font-size:26px!important;height:64px!important}}
 @media(prefers-reduced-motion:reduce){.page section{animation:none!important}}
-
-
-
-/* Readability first: standard device fonts, no handwriting web fonts. */
-:root{--player-ink:#153a64;--review-ink:#962d32;--opponent-ink:#21573e}
-.page #fields input{
-  font-family:Arial,Tahoma,sans-serif!important;
-  font-size:22px!important;font-weight:400!important;
-  line-height:1.5!important;height:53px!important;
-  color:#153a64!important;-webkit-text-fill-color:#153a64!important;
-  background:rgba(255,251,236,.76)!important;
-  border:0!important;border-bottom:2px solid #7892a0!important;
-  border-radius:0!important;padding:6px 9px!important;
-  text-shadow:none!important;letter-spacing:normal!important;
-  opacity:1!important;
-}
-.page #fields input::placeholder{
-  font-family:Arial,Tahoma,sans-serif!important;
-  font-size:16px!important;color:#666!important;
-  -webkit-text-fill-color:#666!important;
-}
-.page #fields input:focus{outline:2px solid #406a86!important;outline-offset:1px!important}
-.page #fields input:disabled{opacity:1!important}
-.page #answers .answer .player-ink,
-.page #answers .answer .opponent-ink{
-  font-family:Arial,Tahoma,sans-serif!important;
-  font-size:18px!important;line-height:1.9!important;font-weight:400!important;text-shadow:none!important;
-}
-.page #answers .answer .player-ink{color:var(--player-ink)!important}
-.page #answers .answer .opponent-ink{color:var(--opponent-ink)!important}
-.page #answers .answer .review-ink{color:var(--review-ink)!important;font:700 15px Arial,Tahoma,sans-serif!important;display:block;padding-top:4px}
-.page #answers .answer .answer-separator{color:#5d5550;margin:0 5px}
-#myCount{font:600 14px Arial,Tahoma,sans-serif!important;color:#315a43!important}
-@media(max-width:450px){.page #fields input{font-size:21px!important;height:53px!important}}
-
-/* Chat-style readable bold text for player input, native system font on each device. */
-.page #fields input{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:25px!important;font-weight:700!important;line-height:1.5!important;height:62px!important;color:#183a63!important;-webkit-text-fill-color:#183a63!important}
-.page #fields input::placeholder{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:17px!important;font-weight:500!important}
-.page #answers .answer .player-ink,.page #answers .answer .opponent-ink{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:21px!important;font-weight:700!important}
-@media(max-width:450px){.page #fields input{font-size:24px!important;height:60px!important}}
-
-/* Match the red field titles: same native font & bold weight, blue ink for player text. */
-:root{--field-shared-font:Tahoma,Arial,sans-serif}
-.page #fields label,.page #fields input{font-family:var(--field-shared-font)!important;font-weight:700!important;font-style:normal!important;text-shadow:none!important}
-.page #fields input{font-size:29px!important;line-height:1.4!important;height:64px!important;color:#174c8a!important;-webkit-text-fill-color:#174c8a!important;text-align:right!important;background:rgba(255,251,237,.5)!important;border:0!important;border-bottom:2px solid #7795a6!important;border-radius:0!important;padding:8px!important}
-.page #fields input::placeholder{font-family:var(--field-shared-font)!important;font-size:18px!important;font-weight:400!important;color:#777!important;-webkit-text-fill-color:#777!important}
