@@ -9,7 +9,7 @@ function fixture(){
  addEventListener(name,fn){this.listeners[name]=fn},append(...children){for(const child of children){child.parentElement=this;this.children.push(child);if(child.id)elements.set(child.id,child)}},replaceChildren(...children){this.children=[];this.append(...children)},querySelector(){return null},querySelectorAll(selector){return selector==='input'?this.children.filter(x=>x.tagName==='INPUT'):[]},focus(){document.activeElement=this;this.listeners.focus?.()},blur(){if(document.activeElement===this)document.activeElement=null},setAttribute(name,value){this.attributes[name]=value}};
  return el};
  for(const id of ids){const el=create();el.id=id;elements.set(id,el)}
- elements.get('difficulty').value='1';
+ elements.get('difficulty').value='1';elements.get('timer').parentElement=create();
  const document={activeElement:null,getElementById:id=>elements.get(id)||null,createElement:create};
  const local=new Map();
  const localStorage={getItem:k=>local.has(k)?local.get(k):null,setItem:(k,v)=>local.set(k,String(v))};
