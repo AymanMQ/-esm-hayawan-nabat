@@ -10,10 +10,8 @@ test('room reads require membership, not merely sign-in',()=>{
  assert.equal(rules.rooms.$room.players.$uid['.write'],false);
 });
 test('private submissions and votes are not readable or writable by clients',()=>{
- for(const name of ['submissions','ballots','literaryBallots']){
-  assert.equal(rules[name].$room['.read']??rules[name].$room.$round?.['.read'],false);
-  assert.equal(rules[name].$room['.write']??rules[name].$room.$round?.['.write'],false);
- }
+ const paths=[rules.submissions.$room.$round.$uid,rules.ballots.$room.$round,rules.literaryBallots.$room];
+ for(const rule of paths){assert.equal(rule['.read'],false);assert.equal(rule['.write'],false)}
 });
 test('room client calls server functions instead of writing membership directly',()=>{
  assert.ok(client.includes("call('createRoom'"));
