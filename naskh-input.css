@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+/* Naskh answer text; loaded after legacy theme */
+html body main.page #fields input{
+font-family:"Noto Naskh Arabic","Geeza Pro",serif!important;
+font-size:30px!important;font-weight:700!important;line-height:1.8!important;height:76px!important;
+color:#164c8a!important;-webkit-text-fill-color:#164c8a!important;
+text-align:right!important;text-shadow:none!important;letter-spacing:normal!important;
+background:rgba(255,250,231,.6)!important;border:0!important;
+border-bottom:2px solid #7c99a8!important;border-radius:0!important;padding:8px 10px!important}
+html body main.page #fields input::placeholder{
+font-family:"Noto Naskh Arabic","Geeza Pro",serif!important;
+font-size:20px!important;font-weight:400!important;color:#777!important;-webkit-text-fill-color:#777!important}
+html body main.page #answers .answer .player-ink{
+font-family:"Noto Naskh Arabic","Geeza Pro",serif!important;font-size:24px!important;font-weight:700!important}
+@media(max-width:450px){html body main.page #fields input{font-size:29px!important;height:73px!important}}
