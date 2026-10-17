@@ -35,3 +35,13 @@ This review is of repository code, **not a completed production penetration test
 ## Security automation added
 - `.github/workflows/codeql.yml`: CodeQL analysis on push, pull request and weekly schedule; results require a successful GitHub Actions run and supported repository security settings.
 - `tests/security-rules.test.cjs` and `tests/room-security.test.cjs`: static rules and mocked callable tests; **not a substitute for RTDB Emulator authorization tests**.
+
+## Safe static publishing prepared — requires explicit Pages settings change
+- `scripts/build-public.cjs` constructs `dist/` from a strict allowlist of HTML, CSS, and browser JavaScript only. It refuses unknown local assets.
+- `tests/public-bundle.test.cjs` ensures backend code, rules, CI and security documents are not in the allowlist.
+- The existing tests workflow now builds the static bundle. `.github/workflows/publish-safe-pages.yml` can publish that artifact using a **manual** workflow dispatch.
+- **The current GitHub Pages configuration may still publish the repository root from the main branch. Until the Pages source is changed, backend files may remain publicly accessible.** Do not assume the new workflow already protects production.
+- After validating CI, open GitHub → repository Settings → Pages → Build and deployment → Source: **GitHub Actions**. Then run Actions → **Publish safe static game** → Run workflow. Verify the public URL returns 404 for `functions/index.js`, `database.secure.rules.json`, `tests/security-rules.test.cjs`, `SECURITY.md`, and `.github/workflows/tests.yml`.
+- Source code previously committed to a public repository remains accessible in Git history, forks, caches and clones even after switching Pages or making the repository private. Rotate any **actual secrets** discovered in history; a Firebase Web API key is generally public configuration, not a service-account credential.
+- Future architecture: move server source to a private repository with its own controlled deployment pipeline; publish only allowlisted browser assets. Do not change repository visibility before confirming hosting entitlements and a safe migration.
+- No GitHub Pages settings or repository visibility were changed by this commit.
