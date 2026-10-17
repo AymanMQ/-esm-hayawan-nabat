@@ -60,6 +60,21 @@ questions.push(
 {id:'d10',track:'diwaniya',level:3,kind:'معنى بيت',q:'ما الفكرة التي يعبر عنها «على قدر أهل العزم تأتي العزائم»؟',choices:['تكبر الإنجازات بقدر قوة الهمة','المال أهم من العمل','الراحة أساس النجاح','الزمن لا يتغير'],answer:0,why:'يؤكد البيت أن قيمة العمل تعكس مقدار عزم صاحبه.',sourceTitle:'ديوان المتنبي — على قدر أهل العزم'}
 );
 
+
+/* Additional Diwaniya rounds: independently sourced classical verse or original puzzles. */
+questions.push(
+{id:'d11',track:'diwaniya',level:1,kind:'من القائل؟',q:'من صاحب البيت «إذا الشعب يومًا أراد الحياة»؟',choices:['أبو القاسم الشابي','المتنبي','أبو تمام','البحتري'],answer:0,why:'البيت من قصيدة «إرادة الحياة» للشاعر التونسي أبي القاسم الشابي.',sourceTitle:'إرادة الحياة — أبو القاسم الشابي (ويكي مصدر)',sourceUrl:'https://ar.wikisource.org/wiki/إرادة_الحياة'},
+{id:'d12',track:'diwaniya',level:1,kind:'أكمل البيت',q:'أكمل للشابي: «فلا بد أن يستجيب ____»',choices:['القدر','المطر','القمر','البشر'],answer:0,why:'تكملة الشطر من قصيدة «إرادة الحياة».',sourceTitle:'إرادة الحياة — أبو القاسم الشابي (ويكي مصدر)',sourceUrl:'https://ar.wikisource.org/wiki/إرادة_الحياة'},
+{id:'d13',track:'diwaniya',level:2,kind:'من القائل؟',q:'لمن البيت «وتعظم في عين الصغير صغارها»؟',choices:['المتنبي','أبو نواس','ابن زيدون','أحمد شوقي'],answer:0,why:'من قصيدة «على قدر أهل العزم تأتي العزائم» للمتنبي.',sourceTitle:'على قدر أهل العزم — المتنبي (ويكي مصدر)',sourceUrl:'https://ar.wikisource.org/wiki/على_قدر_أهل_العزم_تأتي_العزائم'},
+{id:'d14',track:'diwaniya',level:2,kind:'أكمل البيت',q:'أكمل للمتنبي: «وتأتي على قدر الكرام ____»',choices:['المكارم','الفضائل','النجوم','الملاحم'],answer:0,why:'يقابل المتنبي بين أهل العزم والكرام وبين العزائم والمكارم.',sourceTitle:'على قدر أهل العزم — المتنبي (ويكي مصدر)',sourceUrl:'https://ar.wikisource.org/wiki/على_قدر_أهل_العزم_تأتي_العزائم'},
+{id:'d15',track:'diwaniya',level:1,kind:'أكمل القافية',q:'أكمل العبارة المسجوعة: «في الليل أرى القمر، وفي الصباح أرى ____»',choices:['الشجر','الكتاب','القلم','البحرين'],answer:0,why:'القمر والشجر يتفقان في نهاية الراء المسبوقة بفتح، وهو سجع بسيط مؤلف للعبة.',sourceTitle:'نص أصلي مؤلف للعبة — تمرين قافية'},
+{id:'d16',track:'diwaniya',level:2,kind:'لغز شعري',q:'«لا فم لي لكن أروي الأخبار، وفي أوراقي تحفظ الأسرار»؛ ما أنا؟',choices:['كتاب','مطر','قمر','مفتاح'],answer:0,why:'الكتاب يحمل الحكايات والمعلومات في صفحاته.',sourceTitle:'لغز منظوم أصلي مؤلف للعبة'},
+{id:'d17',track:'diwaniya',level:2,kind:'لغز شعري',q:'«أجري بلا قدمين، وأحمل السفن في حين»؛ ما أنا؟',choices:['نهر','جبل','صحراء','شجرة'],answer:0,why:'النهر يجري وتطفو عليه السفن.',sourceTitle:'لغز منظوم أصلي مؤلف للعبة'},
+{id:'d18',track:'diwaniya',level:3,kind:'حرف الروي',q:'أي حرف يصلح رويًّا مشتركًا لكلمات «ضياء» و«صفاء» و«رجاء»؟',choices:['الهمزة','الضاد','الفاء','الراء'],answer:0,why:'تنتهي الكلمات بهمزة تسبقها ألف مد.',sourceTitle:'لغز عروض أصلي مؤلف للعبة'},
+{id:'d19',track:'diwaniya',level:3,kind:'لغز شعري',q:'«أسير معك في ضوء النهار، وأختفي في ظلام الدار»؛ ما أنا؟',choices:['الظل','الصوت','المطر','الهواء'],answer:0,why:'يظهر الظل مع الضوء ويختفي في الظلام.',sourceTitle:'لغز منظوم أصلي مؤلف للعبة'},
+{id:'d20',track:'diwaniya',level:3,kind:'تمييز القافية',q:'أي مجموعة تشترك في الروي نفسه؟',choices:['أمل — عمل — جمل','نجم — بحر — قلم','دار — نور — غيم','قمر — كتاب — شمس'],answer:0,why:'تنتهي كلمات المجموعة الأولى بحرف اللام، وهو الروي المشترك.',sourceTitle:'لغز عروض أصلي مؤلف للعبة'}
+);
+
 function validate(list=questions){const ids=new Set();for(const q of list){if(ids.has(q.id)||!['general','verbal','proverbs','poetry','riddles','diwaniya'].includes(q.track)||![1,2,3].includes(q.level)||!Array.isArray(q.choices)||q.choices.length!==4||!Number.isInteger(q.answer)||q.answer<0||q.answer>=4||!q.q||!q.why)throw Error('سؤال غير صالح: '+q.id);ids.add(q.id)}return true}
 function select(track,level,count=5,random=Math.random){if(!['general','verbal','proverbs','poetry','riddles','diwaniya','mixed'].includes(track)||![1,2,3].includes(level))throw Error('إعداد تحدٍ غير صالح');const pool=questions.filter(q=>(track==='mixed'||q.track===track)&&q.level<=level);for(let i=pool.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}if(track==='mixed'){
  const tracks=['general','verbal','proverbs','poetry','riddles'];
