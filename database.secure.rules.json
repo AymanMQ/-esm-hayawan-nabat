@@ -36,6 +36,18 @@
             ".write": "auth != null && auth.uid === $uid && root.child('rooms').child($room).child('phase').val() === 'waiting' && !data.exists()",
             ".validate": "newData.hasChildren(['name','joinedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 2 && newData.child('name').val().length <= 25"
           }
+        },
+        "literary": {
+          ".write": false
+        },
+        "literaryScores": {
+          ".write": false
+        },
+        "literaryRound": {
+          ".write": false
+        },
+        "literaryUsed": {
+          ".write": false
         }
       }
     },
@@ -73,6 +85,12 @@
     },
     "approvedAnswers": {
       "$candidate": {
+        ".read": false,
+        ".write": false
+      }
+    },
+    "literaryBallots": {
+      "$room": {
         ".read": false,
         ".write": false
       }
