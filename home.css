@@ -1,0 +1,35 @@
+/* Nostalgic social play home — scoped to the landing section. */
+:root{--desk:#866b52;--warm-paper:#f2e5c8;--blue-ink:#1e4d7a;--red-stamp:#ae5045}
+html{background:var(--desk)}
+body{background:repeating-linear-gradient(105deg,#8c7056 0 21px,#84694f 22px 44px)!important}
+.page{box-shadow:0 14px 38px #38271980!important}
+#intro{max-width:560px;margin:0 auto}
+#intro .home-welcome{margin:6px 0 16px;text-align:center}
+#intro .home-welcome strong{display:block;font-size:20px;color:#684d37}
+#intro .home-welcome p{margin:3px 0;color:#5d554e;font-size:14px}
+#intro .home-cta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+#intro .home-action{display:flex;align-items:center;justify-content:center;min-height:86px;padding:12px 10px;text-align:center;text-decoration:none;font:700 20px "Tajawal",Tahoma,Arial,sans-serif!important;line-height:1.5;border-radius:12px;border:2px solid #6f634e;box-shadow:3px 4px 0 #59473555;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+#intro .home-action:active{transform:translate(2px,2px);box-shadow:1px 2px 0 #59473555}
+#intro .home-action:focus-visible{outline:3px solid #174b80;outline-offset:3px}
+#intro .home-action.solo{background:#edc76b;color:#483d2c}
+#intro .home-action.group{background:#d5e7d8;color:#234e42}
+#intro .home-mode{background:#f4e9ce99;padding:14px 16px;margin:12px 0;border:1px dashed #9c886e;border-radius:7px}
+#intro .home-mode label{font-size:15px;margin:3px 0 7px}
+#intro .home-mode select{font-family:"Tajawal",Tahoma,sans-serif;font-size:17px}
+#intro .home-mode .muted{font-size:13px;margin:5px 0}
+#intro .home-leaderboard{padding:15px 15px 17px;background:#f4e9ceba;border:2px double #aa9274;border-radius:7px;box-shadow:0 3px 0 #9a86633b}
+#intro .home-leaderboard h2{font-size:23px;margin:0 0 9px;color:#9c4b43!important}
+#intro .period-tabs{display:flex;gap:8px;margin:9px 0}
+#intro .period-tabs button{flex:1;border:1px solid #ad9b81;background:#e9dbc0;padding:10px;border-radius:5px;color:#4b4a46;font:700 15px Tahoma,Arial,sans-serif;cursor:pointer}
+#intro .period-tabs button[aria-selected="true"]{background:#305c78;color:#fff;border-color:#305c78}
+#intro .ranking-empty{padding:15px 8px;background:#fff9e6a6;border:1px dashed #b9a17f;border-radius:4px;text-align:center;line-height:1.8;color:#574e42}
+#intro .ranking-empty strong{display:block;font-size:17px}
+#intro .ranking-period{margin:0 0 10px;color:#61584d;text-align:center;font-size:13px}
+#intro .extra-play{margin:17px 0 0;border-top:1px dashed #aa947a;padding-top:14px}
+#intro .extra-play>a{display:block;padding:14px;margin:7px 0;text-align:center;text-decoration:none;font:700 19px "Tajawal",Tahoma,sans-serif;border:1px solid #a79275;border-radius:7px;background:#eee0c5;color:#3b5369}
+#intro .extra-play details{padding:8px 2px;color:#5a5146}
+#intro .extra-play summary{cursor:pointer;font-weight:bold;padding:9px}
+#intro .extra-play details a{display:block;padding:10px;color:#355a7b}
+#intro .home-progress{font-size:14px;color:#315c50;text-align:center;margin:14px 0}
+@media(max-width:380px){#intro .home-action{font-size:17px;min-height:76px;padding:8px}}
+@media(prefers-reduced-motion:reduce){#intro .home-action{transition:none}}
