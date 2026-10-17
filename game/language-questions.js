@@ -23,7 +23,32 @@ const questions=[
 {id:'v9',track:'verbal',level:3,kind:'تناظر لفظي',q:'مقدمة : كتاب :: تمهيد : ؟',choices:['خطاب','حجر','طريق','ساعة'],answer:0,why:'المقدمة والتمهيد يسبقان المتن أو المحتوى.'},
 {id:'v10',track:'verbal',level:3,kind:'سياق',q:'«أصاب رأيه كبد الحقيقة». ما المعنى؟',choices:['اقترب من الحقيقة بدقة','تجنب الإجابة','غيّر الموضوع','أخطأ تمامًا'],answer:0,why:'التعبير يدل على إصابة الصواب بدقة.'}
 ];
-function validate(list=questions){const ids=new Set();for(const q of list){if(ids.has(q.id)||!['general','verbal'].includes(q.track)||![1,2,3].includes(q.level)||!Array.isArray(q.choices)||q.choices.length!==4||!Number.isInteger(q.answer)||q.answer<0||q.answer>=4||!q.q||!q.why)throw Error('سؤال غير صالح: '+q.id);ids.add(q.id)}return true}
-function select(track,level,count=5,random=Math.random){if(!['general','verbal','mixed'].includes(track)||![1,2,3].includes(level))throw Error('إعداد تحدٍ غير صالح');const pool=questions.filter(q=>(track==='mixed'||q.track===track)&&q.level<=level);for(let i=pool.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}return pool.slice(0,Math.min(count,pool.length))}
+
+/* Proverbs are common traditional expressions without an asserted author.
+   Poetry snippets below are attributed to al-Mutanabbi and linked to public text.
+   Literary riddles are original game material, not misattributed heritage. */
+questions.push(
+{id:'p1',track:'proverbs',level:1,kind:'أكمل المثل',q:'أكمل المثل: الصديق وقت ____',choices:['الضيق','النوم','الصباح','الشتاء'],answer:0,why:'يُضرب المثل في الصديق الذي يقف مع صاحبه وقت الشدة.',sourceTitle:'مثل عربي متداول'},
+{id:'p2',track:'proverbs',level:1,kind:'أكمل المثل',q:'أكمل: يد واحدة لا ____',choices:['تصفق','تقرأ','تسافر','تنام'],answer:0,why:'يدل المثل على أهمية التعاون.',sourceTitle:'مثل عربي متداول'},
+{id:'p3',track:'proverbs',level:1,kind:'أكمل المثل',q:'أكمل: في التأني السلامة، وفي العجلة ____',choices:['الندامة','السعادة','الراحة','القوة'],answer:0,why:'يدعو المثل إلى التروي وتجنب التسرع.',sourceTitle:'مثل عربي متداول'},
+{id:'p4',track:'proverbs',level:2,kind:'أكمل المثل',q:'أكمل: ربَّ أخٍ لك لم تلده ____',choices:['أمك','أختك','يدك','دارك'],answer:0,why:'يُقال في الصديق القريب الذي يُعامل معاملة الأخ.',sourceTitle:'مثل عربي متداول'},
+{id:'p5',track:'proverbs',level:2,kind:'معنى المثل',q:'ما المقصود بقولهم «لكل جواد كبوة»؟',choices:['حتى الماهر قد يخطئ','كل الخيل سريعة','النجاح مستحيل','الخطأ دائم'],answer:0,why:'المعنى أن المهارة لا تمنع الخطأ العارض.',sourceTitle:'مثل عربي متداول'},
+{id:'p6',track:'proverbs',level:3,kind:'معنى المثل',q:'ما المعنى الأقرب لـ«على نفسها جنت براقش»؟',choices:['تسبّب المرء في ضرر أصابه','عاد المسافر سالمًا','انتصر الضعيف','نجح الصديق'],answer:0,why:'يُضرب لمن جلب الضرر على نفسه بفعله.',sourceTitle:'مثل عربي متداول'},
+{id:'po1',track:'poetry',level:1,kind:'أكمل بيتًا',q:'أكمل للمتنبي: «على قدر أهل العزم تأتي ____»',choices:['العزائم','النجوم','الفضائل','الهمم'],answer:0,why:'يصف البيت العلاقة بين قوة العزم وعظمة الأعمال.',sourceTitle:'ديوان المتنبي — على قدر أهل العزم',sourceUrl:'https://ar.wikisource.org/wiki/على_قدر_أهل_العزم_تأتي_العزائم'},
+{id:'po2',track:'poetry',level:2,kind:'أكمل بيتًا',q:'أكمل للمتنبي: «فلا تقنع بما دون ____»',choices:['النجوم','الغيوم','العيون','السهول'],answer:0,why:'يدعو البيت إلى طلب المعالي.',sourceTitle:'ديوان المتنبي — إذا غامرت في شرف مروم',sourceUrl:'https://ar.wikisource.org/wiki/إذا_غامرت_في_شرف_مروم'},
+{id:'po3',track:'poetry',level:3,kind:'فهم الشعر',q:'ما المعنى الأقرب لقول المتنبي «وتعظم في عين الصغير صغارها»؟',choices:['ضعيف الهمة يرى الصغير عظيمًا','كل الأشياء عظيمة','النجوم صغيرة','العزم يمنع الخوف'],answer:0,why:'يقارن الشاعر بين نظرة أصحاب الهمم المختلفة للأمور.',sourceTitle:'ديوان المتنبي — على قدر أهل العزم',sourceUrl:'https://ar.wikisource.org/wiki/على_قدر_أهل_العزم_تأتي_العزائم'},
+{id:'r1',track:'riddles',level:1,kind:'لغز أدبي',q:'لي أوراق كثيرة ولا أغصان لي، وفي بطني حكايات؛ فمن أنا؟',choices:['كتاب','شجرة','مفتاح','قارب'],answer:0,why:'الكتاب له صفحات ويحتوي حكايات، لكنه ليس شجرة.',sourceTitle:'لغز أصلي للعبة'},
+{id:'r2',track:'riddles',level:1,kind:'لغز كلمات',q:'أحمل الحبر وأترك أثرًا على الورق، ولا أتكلم؛ فمن أنا؟',choices:['قلم','مصباح','ساعة','حقيبة'],answer:0,why:'القلم يكتب بالحبر أو غيره ويترك أثرًا.',sourceTitle:'لغز أصلي للعبة'},
+{id:'r3',track:'riddles',level:2,kind:'لغز أدبي',q:'كلما أخذت مني كبرتُ؛ ما أنا؟',choices:['الحفرة','النافذة','المرآة','الورقة'],answer:0,why:'كلما أزلت ترابًا من الحفرة اتسعت.',sourceTitle:'لغز أصلي للعبة'},
+{id:'r4',track:'riddles',level:2,kind:'لغز كلمات',q:'أنا أول «نهار» وآخر «زمان»؛ أي حرف أنا؟',choices:['ن','ر','م','ز'],answer:0,why:'حرف النون أول كلمة نهار وآخر كلمة زمان.',sourceTitle:'لغز أصلي للعبة'},
+{id:'r5',track:'riddles',level:3,kind:'لغز أدبي',q:'ما الذي تراه في «الليل» ثلاث مرات وفي «النهار» مرة؟',choices:['حرف اللام','حرف النون','حرف الهاء','حرف الراء'],answer:0,why:'في كلمة الليل ثلاث لامات، وفي النهار لام واحدة.',sourceTitle:'لغز أصلي للعبة'}
+);
+
+function validate(list=questions){const ids=new Set();for(const q of list){if(ids.has(q.id)||!['general','verbal','proverbs','poetry','riddles'].includes(q.track)||![1,2,3].includes(q.level)||!Array.isArray(q.choices)||q.choices.length!==4||!Number.isInteger(q.answer)||q.answer<0||q.answer>=4||!q.q||!q.why)throw Error('سؤال غير صالح: '+q.id);ids.add(q.id)}return true}
+function select(track,level,count=5,random=Math.random){if(!['general','verbal','proverbs','poetry','riddles','mixed'].includes(track)||![1,2,3].includes(level))throw Error('إعداد تحدٍ غير صالح');const pool=questions.filter(q=>(track==='mixed'||q.track===track)&&q.level<=level);for(let i=pool.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}if(track==='mixed'){
+ const tracks=['general','verbal','proverbs','poetry','riddles'];
+ const picked=[];for(const type of tracks){const first=pool.find(q=>q.track===type&&!picked.includes(q));if(first&&picked.length<count)picked.push(first)}
+ return picked.concat(pool.filter(q=>!picked.includes(q)).slice(0,Math.max(0,count-picked.length)));
+ }return pool.slice(0,Math.min(count,pool.length))}
 return {questions,validate,select};
 });
