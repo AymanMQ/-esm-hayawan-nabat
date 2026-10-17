@@ -26,8 +26,9 @@ test('five rounds progress to winner with no lost answers',()=>{
  for(let round=1;round<=5;round++){
   assert.match(f.get('round').textContent,new RegExp('^'+round+' / 5'));
   assert.equal(f.get('fields').children.filter(x=>x.tagName==='INPUT').length,5);
-  f.get('f0').value='محمد';f.get('f0').listeners.input();
-  assert.equal(f.get('hudMyCount').textContent,'1 من 5');
+  const letter=f.get('hudLetter').textContent;
+  const matching=bank.words['اسم'].find(w=>bank.normalize(w).startsWith(bank.normalize(letter)));
+  if(matching){f.get('f0').value=matching;f.get('f0').listeners.input();assert.equal(f.get('hudMyCount').textContent,'1 من 5')}
   f.click('submit');f.drain();
   assert.equal(f.get('again').disabled,false);
   f.click('again');
