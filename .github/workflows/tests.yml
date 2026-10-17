@@ -22,6 +22,7 @@ jobs:
       - run: node --check functions/lib/candidate-words.js
       - run: node --check multiplayer-client.js
       - run: node --check solo-challenge.js
+      - run: node --check game/solo-rules.js
       - run: node --check home.js
       - run: node --check game/ranking-periods.js
       - run: node --check game/language-questions.js
