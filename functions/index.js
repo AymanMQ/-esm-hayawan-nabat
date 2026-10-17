@@ -224,3 +224,6 @@ Object.assign(exports,require('./tournaments'));
 
 /* Optional group literary rounds; independent of the five classic rounds. */
 Object.assign(exports,require('./literary')({onCall,HttpsError,options,db,uidOf,codeOf}));
+
+// Private room creation and joining; do not expose membership writes to browsers.
+Object.assign(exports,require('./rooms')({onCall,HttpsError,options,db,uidOf,codeOf}));
