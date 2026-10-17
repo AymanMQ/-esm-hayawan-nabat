@@ -44,3 +44,23 @@ test('bot progress counts scheduled completions',()=>{
  assert.equal(rules.completedCount(schedule,1500),1);
  assert.equal(rules.completedCount(schedule,3000),3);
 });
+
+test('five rounds accumulate and do not award repeated discovery twice',()=>{
+ const h=discovery.clean();let total=0,discoveries=0;
+ for(let i=0;i<5;i++){
+   const result=round({اسم:'أحمد',حيوان:'أرنب'},{},'أ',h);
+   total+=result.mine;discoveries+=result.discoveries;
+ }
+ assert.equal(total,110);
+ assert.equal(discoveries,2);
+});
+test('all empty submissions score zero against an empty opponent',()=>{
+ const result=round({},{});
+ assert.equal(result.mine,0);assert.equal(result.theirs,0);
+ assert.equal(result.discoveries,0);
+});
+test('normalization avoids extra discovery from spelling variants',()=>{
+ const h=discovery.clean();
+ assert.equal(round({اسم:'أحمد'},{},'أ',h).mine,15);
+ assert.equal(round({اسم:'احمد'},{},'أ',h).mine,10);
+});
