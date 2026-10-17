@@ -14,6 +14,7 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tests/*.test.cjs
+      - run: node scripts/build-public.cjs
       - run: node --check game/letters-engine.js
       - run: node --check game/discovery.js
       - run: node --check game/solo-rules.js
