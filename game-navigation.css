@@ -1,0 +1,6 @@
+/* Shared, low-noise navigation between game areas. */
+.game-nav{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin:9px auto 18px;max-width:620px;padding:7px;background:#f5e9d1c7;border:1px solid #b7a285;border-radius:9px}
+.game-nav a{flex:1;min-width:82px;text-align:center;padding:9px 7px;text-decoration:none;color:#2a4d69;font:700 14px "Tajawal",Tahoma,Arial,sans-serif;border-radius:6px}
+.game-nav a[aria-current="page"]{background:#315c78;color:white}
+.game-nav a:focus-visible{outline:2px solid #315c78;outline-offset:2px}
+@media(max-width:380px){.game-nav a{font-size:13px;min-width:75px;padding:8px 5px}}
