@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),q=require('../game/language-questions.js');
 test('all sample questions have valid options',()=>assert.equal(q.validate(),true));
 test('beginner has five questions per track',()=>{assert.equal(q.select('general',1).length,5);assert.equal(q.select('verbal',1).length,5)});
-test('mixed track includes both areas',()=>{const all=q.select('mixed',3,20,()=>.5);assert.equal(new Set(all.map(x=>x.track)).size,2)});
+test('mixed track includes both areas',()=>{const all=q.select('mixed',3,20,()=>.5);assert.ok(new Set(all.map(x=>x.track)).has('general'));assert.ok(new Set(all.map(x=>x.track)).has('verbal'))});
 test('level filter excludes advanced',()=>assert.ok(q.select('general',1,30).every(x=>x.level===1)));
 test('no duplicated question ids',()=>assert.equal(new Set(q.questions.map(x=>x.id)).size,q.questions.length));
 
@@ -11,3 +11,7 @@ test('literary items label their provenance',()=>assert.ok(q.questions.filter(x=
 
 test('Diwaniya has five playable prompts for beginners',()=>assert.equal(q.select('diwaniya',1).length,5));
 test('Diwaniya advanced prompts carry attribution or original label',()=>assert.ok(q.select('diwaniya',3,20).every(x=>x.sourceTitle)));
+
+test('Diwaniya has five beginner questions',()=>assert.equal(q.select('diwaniya',1).length,5));
+test('Diwaniya entries have clear provenance',()=>assert.ok(q.questions.filter(x=>x.track==='diwaniya').every(x=>x.sourceTitle)));
+test('all answer choices are unique',()=>assert.ok(q.questions.every(x=>new Set(x.choices).size===4)));
