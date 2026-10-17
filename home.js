@@ -5,7 +5,7 @@ const show=type=>{
  const weekly=type==='week';
  week.setAttribute('aria-selected',String(weekly));month.setAttribute('aria-selected',String(!weekly));
  panel.setAttribute('aria-labelledby',weekly?'weekTab':'monthTab');
- period.textContent=weekly?'الترتيب الأسبوعي — يبدأ كل اثنين بتوقيت السعودية':'الترتيب الشهري — يبدأ أول كل شهر بتوقيت السعودية';
+ period.textContent=weekly?'الترتيب الأسبوعي — يبدأ الأحد 12:00 صباحًا بتوقيت السعودية':'الترتيب الشهري — يبدأ أول كل شهر بتوقيت السعودية';
  empty.innerHTML='';
  const title=document.createElement('strong');title.textContent='🏅 الترتيب قريبًا';
  empty.append(title,document.createTextNode(weekly?'نجهّز لوحة شرف أسبوعية تعتمد نتائج مؤكدة على الخادم.':'نجهّز لوحة شرف شهرية تعتمد نتائج مؤكدة على الخادم.'));
