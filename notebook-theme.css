@@ -81,3 +81,9 @@ repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 33px,transpar
 .page #fields input::placeholder{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:17px!important;font-weight:500!important}
 .page #answers .answer .player-ink,.page #answers .answer .opponent-ink{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Tahoma,sans-serif!important;font-size:21px!important;font-weight:700!important}
 @media(max-width:450px){.page #fields input{font-size:24px!important;height:60px!important}}
+
+/* Match the red field titles: same native font & bold weight, blue ink for player text. */
+:root{--field-shared-font:Tahoma,Arial,sans-serif}
+.page #fields label,.page #fields input{font-family:var(--field-shared-font)!important;font-weight:700!important;font-style:normal!important;text-shadow:none!important}
+.page #fields input{font-size:29px!important;line-height:1.4!important;height:64px!important;color:#174c8a!important;-webkit-text-fill-color:#174c8a!important;text-align:right!important;background:rgba(255,251,237,.5)!important;border:0!important;border-bottom:2px solid #7795a6!important;border-radius:0!important;padding:8px!important}
+.page #fields input::placeholder{font-family:var(--field-shared-font)!important;font-size:18px!important;font-weight:400!important;color:#777!important;-webkit-text-fill-color:#777!important}
