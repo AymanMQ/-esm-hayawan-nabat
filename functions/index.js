@@ -25,7 +25,7 @@ exports.startRound=onCall(options,async request=>{
    const pool=LETTERS.filter(letter=>!used.includes(letter));
    if(!pool.length)return;
    const letter=pool[Math.floor(Math.random()*pool.length)];
-   return {...s,phase:'playing',round:(s.round||0)+1,letter,roundCategories:activeCats(s),endsAt:Date.now()+90000,usedLetters:[...used,letter]};
+   return {...s,phase:'playing',literary:s.literary?.status==='revealed'?{...s.literary,status:'archived'}:s.literary,round:(s.round||0)+1,letter,roundCategories:activeCats(s),endsAt:Date.now()+90000,usedLetters:[...used,letter]};
  });
  if(!tx.committed)throw new HttpsError('failed-precondition','لا يمكن بدء الجولة');
  return {ok:true,round:tx.snapshot.val().round};
