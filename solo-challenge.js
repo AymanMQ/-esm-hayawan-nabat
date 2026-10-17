@@ -9,10 +9,10 @@ let matchDiscoveries=0;
 function saveDiscoveries(){try{localStorage.setItem('eshn_discoveries_v1',JSON.stringify(history))}catch{}}
 function updateDiscoveryCount(){const label=$('discoveryCount');if(label)label.textContent='كلمات مختلفة اكتشفتها: '+discovery.count(history)}
 
-function countAnswers(){$('myCount').textContent='أكملت '+[...$('fields').querySelectorAll('input')].filter(input=>input.value.trim()).length+' من '+cats.length+' خانات'}
+function countAnswers(){const n=[...$('fields').querySelectorAll('input')].filter(input=>input.value.trim()).length;$('myCount').textContent='أكملت '+n+' من '+cats.length+' خانات';$('hudMyCount').textContent=n+' من '+cats.length;$('hudMyProgress').value=n}
 function show(page){['intro','play','results','matchEnd'].forEach(id=>$(id).classList.toggle('hidden',id!==page));window.scrollTo(0,0);const section=$(page),heading=section.querySelector('h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
 function updateHeader(){ $('difficultyName').textContent=selection().name;$('timeLimit').textContent=selection().time+' ثانية';}
-function updateMyProgress(){let n=0;for(let i=0;i<cats.length;i++)if(($('f'+i)?.value||'').trim())n++;$('myCount').textContent='أكملت '+n+' من '+cats.length+' خانات';}
+function updateMyProgress(){countAnswers()}
 function startMatch(){clearInterval(timer);clearInterval(revealTimer);difficulty=Number($('difficulty').value);round=0;used=[];totals=[0,0];matchDiscoveries=0;startRound()}
 function randomLetter(){let pool=letters.filter(l=>!used.includes(l));if(!pool.length){used=[];pool=letters}const result=pool[Math.floor(Math.random()*pool.length)];used.push(result);return result}
 function startRound(){clearInterval(timer);clearInterval(revealTimer);$('submit').disabled=false;if(round>=5){endMatch();return}round++;letter=randomLetter();$('round').textContent=round+' / 5';$('letter').textContent=letter;$('hudLetter').textContent=letter;$('fields').replaceChildren();for(const [i,cat] of cats.entries()){const label=document.createElement('label');label.htmlFor='f'+i;label.textContent=cat;const input=document.createElement('input');input.id='f'+i;input.maxLength=45;input.autocomplete='off';input.placeholder='اكتب '+cat+'…';input.addEventListener('input',countAnswers);$('fields').append(label,input)}
