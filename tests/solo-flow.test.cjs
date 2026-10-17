@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
-const bank=require('../game/answer-bank.js'),discovery=require('../game/discovery.js');
+const bank=require('../game/answer-bank.js'),discovery=require('../game/discovery.js'),rules=require('../game/solo-rules.js'),match=require('../game/solo-match.js');
 const script=fs.readFileSync(path.join(__dirname,'../solo-challenge.js'),'utf8');
 const ids=['difficulty','difficultyName','timeLimit','start','intro','play','results','matchEnd','fields','submit','round','letter','hudLetter','myCount','hudMyCount','hudMyProgress','liveScore','botStatus','botCount','botProgress','finishWarning','timer','answers','resultLetter','score','cumulative','outcome','again','home','restart','matchHome','finalTotal','winner','matchDiscovery','discoveryCount','hudCurrentField'];
 function fixture(){
@@ -14,7 +14,7 @@ function fixture(){
  const local=new Map();
  const localStorage={getItem:k=>local.has(k)?local.get(k):null,setItem:(k,v)=>local.set(k,String(v))};
  const clock={now:()=>now};
- const context={window:{AnswerBank:bank,WordDiscovery:discovery,scrollTo(){}},document,localStorage,Date:class extends Date{static now(){return now}},Math,console,setTimeout(fn){const id=next++;timeouts.set(id,fn);return id},clearTimeout:id=>timeouts.delete(id),setInterval(fn){const id=next++;intervals.set(id,fn);return id},clearInterval:id=>intervals.delete(id)};
+ const context={window:{AnswerBank:bank,WordDiscovery:discovery,SoloRules:rules,SoloMatch:match,scrollTo(){}},document,localStorage,Date:class extends Date{static now(){return now}},Math,console,setTimeout(fn){const id=next++;timeouts.set(id,fn);return id},clearTimeout:id=>timeouts.delete(id),setInterval(fn){const id=next++;intervals.set(id,fn);return id},clearInterval:id=>intervals.delete(id)};
  vm.runInNewContext(script,context);
  const click=id=>{const el=elements.get(id);assert.ok(el?.listeners.click,'missing click '+id);el.listeners.click()};
  const drain=()=>{for(let i=0;i<50&&timeouts.size;i++){const tasks=[...timeouts.entries()];timeouts.clear();for(const [,fn] of tasks)fn()}assert.equal(timeouts.size,0)};
