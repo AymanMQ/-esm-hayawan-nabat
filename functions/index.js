@@ -20,7 +20,7 @@ async function stateFor(room,round,uid){const s=(await db.ref('rooms/'+room).get
 exports.startRound=onCall(options,async request=>{
  const uid=uidOf(request),room=codeOf(request.data?.room),ref=db.ref('rooms/'+room);
  const tx=await ref.transaction(s=>{
-   if(!s||s.host!==uid||!['waiting','results'].includes(s.phase)||(s.round||0)>=5)return;
+   if(!s||s.host!==uid||!['waiting','results'].includes(s.phase)||s.literary?.status==='asking'||(s.round||0)>=5)return;
    const used=Array.isArray(s.usedLetters)?s.usedLetters:[];
    const pool=LETTERS.filter(letter=>!used.includes(letter));
    if(!pool.length)return;
@@ -221,3 +221,6 @@ exports.moderateCandidateAnswer=onCall(options,async request=>{
 
 // Prototype tournament callable handlers (not deployed).
 Object.assign(exports,require('./tournaments'));
+
+/* Optional group literary rounds; independent of the five classic rounds. */
+Object.assign(exports,require('./literary')({onCall,HttpsError,options,db,uidOf,codeOf}));
