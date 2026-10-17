@@ -16,6 +16,7 @@ const startLiteraryRound=onCall(options,async request=>{
  const available=bank.filter(q=>!used.includes(q.id));
  const selected=(available.length?available:bank)[Math.floor(Math.random()*(available.length||bank.length))];
  const started=Date.now(),endAt=started+30000;
+ const shuffled=[...selected.choices];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}
  const tx=await ref.transaction(s=>{
    if(!s||s.host!==uid||!['waiting','results'].includes(s.phase)||s.literary?.status==='asking')return;
    const nextUsed=Array.isArray(s.literaryUsed)?s.literaryUsed:[];
@@ -23,7 +24,7 @@ const startLiteraryRound=onCall(options,async request=>{
    const nextRound=(s.literaryRound||0)+1;
    if(nextRound>30)return;
    return {...s,literaryRound:nextRound,literaryUsed:nextUsed.length>=bank.length?[selected.id]:[...nextUsed,selected.id],
-     literary:{status:'asking',round:nextRound,questionId:selected.id,kind:selected.kind,question:selected.q,choices:selected.choices,startedAt:started,endAt}};
+     literary:{status:'asking',round:nextRound,questionId:selected.id,kind:selected.kind,question:selected.q,choices:shuffled,startedAt:started,endAt}};
  });
  if(!tx.committed)throw new HttpsError('failed-precondition','تعذر بدء الفقرة');
  return {ok:true,round:tx.snapshot.val().literaryRound};
@@ -46,16 +47,18 @@ const revealLiteraryRound=onCall(options,async request=>{
  if(Date.now()<s.literary.endAt+2000)throw new HttpsError('failed-precondition','انتظر انتهاء المؤقت');
  const q=byId.get(s.literary.questionId);
  if(!q)throw new HttpsError('internal','تعذر إيجاد السؤال');
+ const correctIndex=s.literary.choices.indexOf(q.choices[q.answer]);
+ if(correctIndex<0)throw new HttpsError('internal','تعذر التحقق من الخيارات');
  const votes=(await db.ref('literaryBallots/'+room+'/'+s.literary.round).get()).val()||{};
  const awarded={};
  for(const [player,ballot] of Object.entries(votes)){
-   if(s.players[player]&&Number.isInteger(ballot?.choice)&&ballot.castAt<=s.literary.endAt&&ballot.choice===q.answer)awarded[player]=10;
+   if(s.players[player]&&Number.isInteger(ballot?.choice)&&ballot.castAt<=s.literary.endAt&&ballot.choice===correctIndex)awarded[player]=10;
  }
  const tx=await ref.transaction(v=>{
    if(!v||v.host!==uid||v.literary?.status!=='asking'||v.literary.questionId!==q.id||v.literary.round!==s.literary.round)return;
    const scores={...(v.literaryScores||{})};
    for(const [player,points] of Object.entries(awarded))if(v.players[player])scores[player]=(scores[player]||0)+points;
-   return {...v,literaryScores:scores,literary:{...v.literary,status:'revealed',correctIndex:q.answer,explanation:q.why,sourceTitle:q.sourceTitle||'فقرة أصلية للعبة',roundScores:awarded,revealedAt:Date.now()}};
+   return {...v,literaryScores:scores,literary:{...v.literary,status:'revealed',correctIndex,explanation:q.why,sourceTitle:q.sourceTitle||'فقرة أصلية للعبة',roundScores:awarded,revealedAt:Date.now()}};
  });
  if(!tx.committed){const latest=(await ref.get()).val();if(latest?.literary?.status==='revealed'&&latest.literary.round===s.literary.round)return {ok:true,alreadyRevealed:true};throw new HttpsError('aborted','تعذر اعتماد النتيجة') }
  return {ok:true};
