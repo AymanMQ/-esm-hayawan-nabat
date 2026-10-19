@@ -85,7 +85,28 @@ async function decideProposal(proposalId,accept){try{await call('decideCategoryP
 function begin(v){cats=categoryRules.validate(v.roundCategories||categoryRules.DEFAULT);clearInterval(ticker);submitted=false;deadline=v.endsAt;$('submit').disabled=false;$('saveState').textContent='';$('round').textContent=v.round;$('letter').textContent=v.letter;$('fields').replaceChildren();cats.forEach((cat,i)=>{const label=document.createElement('label');label.htmlFor='f'+i;label.textContent=cat;const input=document.createElement('input');input.id='f'+i;input.maxLength=60;input.placeholder='اكتب '+cat+'…';$('fields').append(label,input)});show('game');tick();ticker=setInterval(tick,250)}
 function tick(){if(submitted)return;const n=Math.max(0,Math.ceil((deadline-Date.now()-offset)/1000));$('clock').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');if(n===0){clearInterval(ticker);submit();if(host){$('openReview').classList.remove('hide')}}}
 async function start(){clear();try{$('start').disabled=true;await call('startRound',{room})}catch(e){msg(e)}finally{$('start').disabled=false}}
-async function submit(){if(submitted||!room)return;submitted=true;clearInterval(ticker);$('submit').disabled=true;const answers={};cats.forEach((cat,i)=>answers[cat]=$('f'+i).value.trim());try{await call('submitAnswers',{room,round,answers});show('done')}catch(e){msg(e);$('saveState').textContent='تعذر التسليم؛ قد يكون الوقت انتهى';show('done')}}
+async function submit(){
+ if(submitted||!room)return;
+ submitted=true;clearInterval(ticker);$('submit').disabled=true;
+ const answers={};cats.forEach((cat,i)=>answers[cat]=$('f'+i).value.trim());
+ try{
+  await call('submitAnswers',{room,round,answers});
+  $('doneMessage').textContent='حُفظت إجاباتك بنجاح. انتظر انتهاء المؤقت وكشف إجابات الجميع.';
+  $('retrySubmit').classList.add('hide');
+  show('done');
+ }catch(e){
+  msg(e);
+  const expired=Date.now()+offset>=deadline;
+  $('doneMessage').textContent=expired?'انتهى وقت الجولة ولم يتم تأكيد حفظ إجاباتك. انتظر المراجعة.':'لم تُحفظ إجاباتك. يمكنك المحاولة مجددًا قبل انتهاء الوقت.';
+  $('retrySubmit').classList.toggle('hide',expired);
+  show('done');
+ }
+}
+function retrySubmit(){
+ if(!room||Date.now()+offset>=deadline)return;
+ submitted=false;$('submit').disabled=false;clear();
+ show('game');tick();ticker=setInterval(tick,250);
+}
 function listenReview(){const path='reviews/'+room+'/'+round;if(reviewRef&&reviewRef.toString()!==db.ref(path).toString()){reviewRef.off('value',reviewListener);reviewRef=null;reviewListener=null}if(reviewRef)return;reviewRef=db.ref(path);reviewListener=reviewRef.on('value',s=>{reviewData=s.val();if(currentPhase==='review')renderReview();else if(currentPhase==='results')renderScores()})}
 function renderReview(){const box=$('reviewAnswers');box.replaceChildren();if(!reviewData){box.textContent='انتظر كشف الإجابات…';return}const remaining=Math.max(0,Math.ceil((reviewData.closesAt-Date.now()-offset)/1000));$('reviewStatus').textContent='تبقى للمراجعة: '+remaining+' ثانية';for(const cat of cats){const title=document.createElement('h3');title.textContent=cat;box.append(title);for(const [author,ans] of Object.entries(reviewData.answers||{})){const val=ans[cat]||'—',line=document.createElement('div');line.className='person';line.style.margin='7px 0';const txt=document.createElement('span');txt.textContent=(players[author]?.name||'لاعب')+': '+val;line.append(txt);const challenged=reviewData.challenges?.[author]?.[cat];if(author!==uid&&val!=='—'&&remaining>0){if(challenged){const controls=document.createElement('div');controls.className='vote-options';const yes=document.createElement('button');yes.type='button';yes.className='vote-yes';yes.textContent='👍 تمشي';yes.onclick=()=>vote(author,cat,true);const no=document.createElement('button');no.type='button';no.className='vote-no';no.textContent='👎 ما تمشي';no.onclick=()=>vote(author,cat,false);controls.append(yes,no);line.append(controls)}else{const b=document.createElement('button');b.className='btn secondary';b.textContent='اعترض 🤨';b.onclick=()=>challenge(author,cat);line.append(b)}}if(challenged){const note=document.createElement('small');note.textContent=' اعتراض مفتوح';line.append(note)}box.append(line)}}$('finalize').classList.toggle('hide',!host);$('finalize').disabled=remaining>0}
 async function challenge(author,category){try{await call('challengeAnswer',{room,round,author,category})}catch(e){msg(e)}}
@@ -94,6 +115,6 @@ async function openReview(){try{await call('openReview',{room,round})}catch(e){m
 async function finalize(){try{await call('finalizeReview',{room,round})}catch(e){msg(e)}}
 let latestRoomState=null;function renderScores(state){if(state)latestRoomState=state;const box=$('scoreRows');box.replaceChildren();const totals=latestRoomState?.totals||{};Object.entries(players).sort((a,b)=>(totals[b[0]]||0)-(totals[a[0]]||0)).forEach(([id,p],i)=>{const row=document.createElement('p');row.textContent=(i+1)+'. '+p.name+' — '+(totals[id]||0)+' نقطة';box.append(row)});$('nextRound').classList.toggle('hide',!host||round>=5);$('startLiteraryAfterRound').classList.toggle('hide',!host||literaryState?.status==='asking');$('gameOver').textContent=round>=5?'خلصت المباراة! 🏆':'انتهت الجولة — الجولة التالية عند المضيف'}
 function leave(){stopWatch();room=null;lastRound=0;lastLiteraryRound=0;dismissedLiteraryRound=0;submitted=false;show('welcome')}
-$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;$('startLiterary').onclick=startLiterary;$('startLiteraryAfterRound').onclick=startLiterary;$('revealLiterary').onclick=revealLiterary;$('literaryBack').onclick=backFromLiterary;$('sendProposal').onclick=proposeCategory;$('resetCategories').onclick=()=>setCategories(categoryRules.DEFAULT);
-setInterval(()=>{if(literaryState?.status==='asking'&&room)renderLiterary({literary:literaryState,players,literaryScores:{}});if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&submitted&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide')},1000);
+$('name').value=localStorage.getItem('eshn_name')||'';$('create').onclick=create;$('join').onclick=join;$('start').onclick=start;$('submit').onclick=submit;$('leave').onclick=leave;$('backLobby').onclick=()=>show('done');$('retrySubmit').onclick=retrySubmit;$('openReview').onclick=openReview;$('finalize').onclick=finalize;$('nextRound').onclick=start;$('startLiterary').onclick=startLiterary;$('startLiteraryAfterRound').onclick=startLiterary;$('revealLiterary').onclick=revealLiterary;$('literaryBack').onclick=backFromLiterary;$('sendProposal').onclick=proposeCategory;$('resetCategories').onclick=()=>setCategories(categoryRules.DEFAULT);
+setInterval(()=>{if(literaryState?.status==='asking'&&room)renderLiterary({literary:literaryState,players,literaryScores:{}});if(currentPhase==='review'&&reviewData)renderReview();if(currentPhase==='playing'&&host&&Date.now()+offset>=deadline){$('openReview').classList.remove('hide')}else $('openReview').classList.add('hide');if(!$('retrySubmit').classList.contains('hide')&&Date.now()+offset>=deadline){$('retrySubmit').classList.add('hide');$('doneMessage').textContent='انتهى وقت الجولة ولم يتم تأكيد حفظ إجاباتك. انتظر المراجعة.'}},1000);
 })();
