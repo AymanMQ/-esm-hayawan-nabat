@@ -1,10 +1,12 @@
-// Firebase Web App public configuration. Never put service account credentials here.
+// Staging-only Firebase Web App public configuration. Never put service account credentials here.
+// This branch must not be merged into main without restoring production configuration.
 window.FADAWAH_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyB8TKNzA1y9TImLosvStmdNtOoqYQnICWs",
-  authDomain: "fadawah-games.firebaseapp.com",
-  databaseURL: "https://fadawah-games-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "fadawah-games",
-  storageBucket: "fadawah-games.firebasestorage.app",
-  messagingSenderId: "455831058004",
-  appId: "1:455831058004:web:f837e4346dfb28c1851fc1"
+  apiKey: "AIzaSyAnmEGvFJN6sbwN7JYIR5yuXvRwjfNBaDA",
+  authDomain: "fadawah-games-staging.firebaseapp.com",
+  databaseURL: "https://fadawah-games-staging-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "fadawah-games-staging",
+  storageBucket: "fadawah-games-staging.firebasestorage.app",
+  messagingSenderId: "642834592088",
+  appId: "1:642834592088:web:ea93b61522d11fdabeb52d",
+  measurementId: "G-FC73D3JMBJ"
 };
